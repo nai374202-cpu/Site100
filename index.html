@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="pt-AO">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Além do Além - Explicações Domiciliares em Luanda, Angola</title>
+    <meta name="description" content="Aulas particulares em casa em Luanda. Professores qualificados para todas as disciplinas. Contacte 922 221 997">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        :root { --primary: #1a365d; --secondary: #d4af37; --light: #f7fafc; --dark: #2d3748; }
+        body { color: var(--dark); line-height: 1.6; background: var(--light); }
+        .container { width: 90%; max-width: 1200px; margin: 0 auto; padding: 0 15px; }
+        
+        /* Header */
+        header { background: var(--primary); color: white; padding: 1rem 0; position: sticky; top: 0; }
+        .header-container { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.8rem; font-weight: 700; color: white; text-decoration: none; display: flex; align-items: center; }
+        .logo-img { width: 50px; height: 50px; margin-right: 15px; }
+        .logo-name { font-size: 1.8rem; }
+        .logo-name span { color: var(--secondary); }
+        .slogan { font-size: 0.9rem; font-style: italic; color: var(--secondary); }
+        nav ul { display: flex; list-style: none; }
+        nav ul li { margin-left: 1.5rem; }
+        nav ul li a { color: white; text-decoration: none; font-weight: 500; transition: color 0.3s; }
+        nav ul li a:hover { color: var(--secondary); }
+        .mobile-menu { display: none; font-size: 1.5rem; cursor: pointer; color: var(--secondary); }
+        
+        /* Hero */
+        .hero { background: linear-gradient(rgba(26,54,93,0.8), rgba(26,54,93,0.9)), url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'); background-size: cover; background-position: center; color: white; padding: 8rem 0; text-align: center; }
+        .hero h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+        .hero p { font-size: 1.2rem; max-width: 600px; margin: 0 auto 2rem; }
+        .btn { display: inline-block; background: var(--secondary); color: var(--primary); padding: 0.8rem 1.8rem; border-radius: 4px; text-decoration: none; font-weight: 600; transition: all 0.3s; border: 2px solid var(--secondary); cursor: pointer; }
+        .btn:hover { background: transparent; color: var(--secondary); }
+        
+        /* Services */
+        .services { padding: 5rem 0; background: white; }
+        .section-title { text-align: center; margin-bottom: 3rem; }
+        .section-title h2 { font-size: 2.2rem; color: var(--primary); margin-bottom: 0.5rem; position: relative; display: inline-block; }
+        .section-title h2::after { content: ""; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 80px; height: 3px; background: var(--secondary); }
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+        .service-card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.3s; border-top: 4px solid var(--secondary); }
+        .service-card:hover { transform: translateY(-5px); }
+        .service-icon { background: var(--primary); color: var(--secondary); font-size: 2.5rem; padding: 1.5rem; text-align: center; }
+        .service-content { padding: 1.5rem; }
+        
+        /* Contact */
+        .contact { padding: 5rem 0; background: var(--light); }
+        .contact-container { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
+        .contact-info h3 { margin-bottom: 1.5rem; color: var(--primary); }
+        .contact-item { display: flex; align-items: flex-start; margin-bottom: 1.5rem; }
+        .contact-icon { background: var(--secondary); color: var(--primary); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 1rem; font-weight: bold; }
+        
+        .contact-form { background: white; padding: 2.5rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: var(--primary); }
+        .form-control { width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 4px; font-size: 1rem; }
+        .form-control:focus { border-color: var(--secondary); outline: none; }
+        textarea.form-control { min-height: 120px; resize: vertical; }
+        
+        /* Mensagens de status */
+        .form-message { padding: 10px; border-radius: 4px; margin-top: 15px; display: none; }
+        .form-message.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; display: block; }
+        .form-message.error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; display: block; }
+        
+        /* Footer */
+        footer { background: var(--primary); color: white; padding: 3rem 0 1.5rem; text-align: center; }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .mobile-menu { display: block; }
+            nav ul { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: var(--primary); flex-direction: column; padding: 1rem 0; }
+            nav ul.show { display: flex; }
+            nav ul li { margin: 0; text-align: center; }
+            nav ul li a { display: block; padding: 0.8rem 0; }
+            .hero h1 { font-size: 2rem; }
+            .hero { padding: 6rem 0; }
+            .contact-container { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="#" class="logo">
+                <div class="logo-img">
+                    <svg width="50" height="50" viewBox="0 0 60 60">
+                        <defs>
+                            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#1a365d;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#2d4a7c;stop-opacity:1" />
+                            </linearGradient>
+                            <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#d4af37;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#f4d03f;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <circle cx="30" cy="30" r="28" fill="url(#grad1)" stroke="url(#grad2)" stroke-width="1.5"/>
+                        <path d="M20,20 Q30,10 40,20 T60,30 T40,40 T20,40 T10,30 T20,20" fill="none" stroke="url(#grad2)" stroke-width="2.5" stroke-linecap="round"/>
+                        <path d="M25,35 L35,25" stroke="#f7fafc" stroke-width="3" stroke-linecap="round"/>
+                        <circle cx="25" cy="35" r="2.5" fill="#f7fafc"/>
+                        <circle cx="35" cy="25" r="2.5" fill="#f7fafc"/>
+                        <path d="M30,15 L32,20 L37,20 L33,23 L35,28 L30,25 L25,28 L27,23 L23,20 L28,20 Z" fill="url(#grad2)"/>
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <div class="logo-name">Além do <span>Além</span></div>
+                    <div class="slogan">Elevando o conhecimento angolano</div>
+                </div>
+            </a>
+            <div class="mobile-menu">☰</div>
+            <nav>
+                <ul>
+                    <li><a href="#home">Início</a></li>
+                    <li><a href="#servicos">Serviços</a></li>
+                    <li><a href="#sobre">Sobre</a></li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero" id="home">
+        <div class="container">
+            <h1>Além do Além - Explicações em Luanda</h1>
+            <p>Serviços de explicação domiciliar de excelência em Luanda. Professores qualificados para todas as disciplinas e níveis de ensino.</p>
+            <a href="#contacto" class="btn">Contacte-nos Agora</a>
+        </div>
+    </section>
+
+    <section class="services" id="servicos">
+        <div class="container">
+            <div class="section-title">
+                <h2>Nossos Serviços</h2>
+                <p>Educação de qualidade adaptada à realidade angolana</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">📚</div>
+                    <div class="service-content">
+                        <h3>Explicações Domiciliares</h3>
+                        <p>Aulas particulares em sua casa em Luanda para todos os níveis de ensino.</p>
+                        <div style="margin-top: 1rem;">
+                            <strong>Preços:</strong>
+                            <ul style="list-style: none; margin-top: 0.5rem;">
+                                <li>• Primário: 5.000-8.000 AOA/aula</li>
+                                <li>• Secundário: 8.000-15.000 AOA/aula</li>
+                                <li>• Universitário: 15.000-25.000 AOA/aula</li>
+                            </ul>
+                        </div>
+                        <a href="https://wa.me/244922221997?text=Olá! Gostaria de aulas particulares" class="btn" style="margin-top: 1rem;">📞 922 221 997</a>
+                    </div>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">💻</div>
+                    <div class="service-content">
+                        <h3>Desenvolvimento de Sites</h3>
+                        <p>Sites profissionais para empresas angolanas com domínio .ao e hospedagem.</p>
+                        <div style="margin-top: 1rem;">
+                            <strong>Pacotes:</strong>
+                            <ul style="list-style: none; margin-top: 0.5rem;">
+                                <li>• Site Básico: 50.000-100.000 AOA</li>
+                                <li>• Site Profissional: 100.000-250.000 AOA</li>
+                                <li>• E-commerce: 250.000-500.000 AOA</li>
+                            </ul>
+                        </div>
+                        <a href="https://wa.me/244922221997?text=Olá! Gostaria de um site" class="btn" style="margin-top: 1rem;">💻 Pedir Orçamento</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="contact" id="contacto">
+        <div class="container">
+            <div class="section-title">
+                <h2>Entre em Contacto</h2>
+                <p>Estamos aqui para ajudar. Envie sua mensagem!</p>
+            </div>
+            <div class="contact-container">
+                <div class="contact-info">
+                    <h3>Informações de Contacto</h3>
+                    <div class="contact-item">
+                        <div class="contact-icon">📞</div>
+                        <div class="contact-details">
+                            <h4>Telefone/WhatsApp</h4>
+                            <p>922 221 997</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">📍</div>
+                        <div class="contact-details">
+                            <h4>Localização</h4>
+                            <p>Luanda, Angola</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">⏰</div>
+                        <div class="contact-details">
+                            <h4>Horário</h4>
+                            <p>Segunda a Sábado: 8h-20h</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">📧</div>
+                        <div class="contact-details">
+                            <h4>Email</h4>
+                            <p>contato@alemdoalem.co.ao<br>nai374202@gmail.com</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-form">
+                    <h3>Envie sua Mensagem</h3>
+                    
+                    <!-- FORMULÁRIO QUE ENVIA PARA EMAIL -->
+                    <form action="https://formsubmit.co/nai374202@gmail.com" method="POST">
+                        <!-- Campos ocultos para configuração -->
+                        <input type="hidden" name="_captcha" value="false">
+                        <input type="hidden" name="_subject" value="📧 NOVO CONTACTO - Site Além do Além">
+                        <input type="hidden" name="_template" value="table">
+                        <input type="hidden" name="_next" value="https://seuusuario.github.io/alemdoalem/obrigado.html">
+                        
+                        <div class="form-group">
+                            <label for="nome">Nome Completo *</label>
+                            <input type="text" id="nome" name="nome" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="telefone">Telefone *</label>
+                            <input type="tel" id="telefone" name="telefone" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" class="form-control">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="servico">Serviço de Interesse</label>
+                            <select id="servico" name="servico" class="form-control">
+                                <option value="">Seleccione um serviço</option>
+                                <option value="Explicações Primário">Explicações - Primário</option>
+                                <option value="Explicações Secundário">Explicações - Secundário</option>
+                                <option value="Explicações Universitário">Explicações - Universitário</option>
+                                <option value="Site Básico">Site Básico</option>
+                                <option value="Site Profissional">Site Profissional</option>
+                                <option value="E-commerce">E-commerce</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="mensagem">Mensagem *</label>
+                            <textarea id="mensagem" name="mensagem" class="form-control" placeholder="Descreva as suas necessidades..." required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn">📧 Enviar Mensagem</button>
+                    </form>
+                    
+                    <div style="margin-top: 1rem; text-align: center;">
+                        <p style="font-size: 0.9rem; color: #666;">
+                            <strong>Ou contacte directamente:</strong><br>
+                            <a href="https://wa.me/244922221997" style="color: var(--primary);">📞 WhatsApp: 922 221 997</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p><strong>Contacte-nos:</strong> 📞 922 221 997 | 📧 contato@alemdoalem.co.ao / nai374202@gmail.com | 📍 Luanda, Angola</p>
+            <p style="margin-top: 1rem; color: #d4af37;">&copy; 2024 Além do Além. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Menu mobile
+        document.querySelector('.mobile-menu').addEventListener('click', function() {
+            document.querySelector('nav ul').classList.toggle('show');
+        });
+
+        // Fechar menu ao clicar em link
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.querySelector('nav ul').classList.remove('show');
+            });
+        });
+
+        // Smooth scroll para âncoras
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
