@@ -6,14 +6,33 @@
     <title>Além do Além - Explicações Domiciliares em Luanda, Angola</title>
     <meta name="description" content="Aulas particulares em casa em Luanda. Professores qualificados para todas as disciplinas. Contacte 922 221 997">
     
+    <!-- Google reCAPTCHA -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    
+    <!-- Font Awesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Chart.js para gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        :root { --primary: #1a365d; --secondary: #d4af37; --light: #f7fafc; --dark: #2d3748; }
+        :root { 
+            --primary: #1a365d; 
+            --secondary: #d4af37; 
+            --light: #f7fafc; 
+            --dark: #2d3748; 
+            --success: #48bb78; 
+            --danger: #f56565; 
+            --warning: #ed8936; 
+            --info: #4299e1;
+            --admin: #9f7aea;
+        }
         body { color: var(--dark); line-height: 1.6; background: var(--light); }
         .container { width: 90%; max-width: 1200px; margin: 0 auto; padding: 0 15px; }
         
         /* Header */
-        header { background: var(--primary); color: white; padding: 1rem 0; position: sticky; top: 0; }
+        header { background: var(--primary); color: white; padding: 1rem 0; position: sticky; top: 0; z-index: 1000; }
         .header-container { display: flex; justify-content: space-between; align-items: center; }
         .logo { font-size: 1.8rem; font-weight: 700; color: white; text-decoration: none; display: flex; align-items: center; }
         .logo-img { width: 50px; height: 50px; margin-right: 15px; }
@@ -25,13 +44,34 @@
         nav ul li a { color: white; text-decoration: none; font-weight: 500; transition: color 0.3s; }
         nav ul li a:hover { color: var(--secondary); }
         .mobile-menu { display: none; font-size: 1.5rem; cursor: pointer; color: var(--secondary); }
+        .user-info { display: flex; align-items: center; gap: 1rem; color: white; }
+        .user-name { color: var(--secondary); font-weight: 600; }
+        .user-badge { background: var(--admin); color: white; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8rem; }
+        .logout-btn { background: transparent; border: 1px solid var(--secondary); color: var(--secondary); padding: 0.3rem 1rem; border-radius: 4px; cursor: pointer; transition: all 0.3s; }
+        .logout-btn:hover { background: var(--secondary); color: var(--primary); }
         
-        /* Hero */
-        .hero { background: linear-gradient(rgba(26,54,93,0.8), rgba(26,54,93,0.9)), url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'); background-size: cover; background-position: center; color: white; padding: 8rem 0; text-align: center; }
-        .hero h1 { font-size: 2.5rem; margin-bottom: 1rem; }
-        .hero p { font-size: 1.2rem; max-width: 600px; margin: 0 auto 2rem; }
-        .btn { display: inline-block; background: var(--secondary); color: var(--primary); padding: 0.8rem 1.8rem; border-radius: 4px; text-decoration: none; font-weight: 600; transition: all 0.3s; border: 2px solid var(--secondary); cursor: pointer; }
-        .btn:hover { background: transparent; color: var(--secondary); }
+        /* Hero com Slideshow */
+        .hero { position: relative; height: 80vh; overflow: hidden; color: white; }
+        .hero-slideshow { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .hero-slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; transition: opacity 1s ease-in-out; }
+        .hero-slide.active { opacity: 1; }
+        .hero-slide::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(26,54,93,0.7), rgba(26,54,93,0.8)); }
+        .hero-content { position: relative; z-index: 10; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center; padding: 0 20px; }
+        .hero h1 { font-size: 3rem; margin-bottom: 1rem; animation: fadeInUp 1s ease; }
+        .hero p { font-size: 1.2rem; max-width: 600px; margin: 0 auto 2rem; animation: fadeInUp 1s ease 0.2s both; }
+        .hero .btn { animation: fadeInUp 1s ease 0.4s both; }
+        .hero-controls { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 20; display: flex; gap: 10px; }
+        .hero-dot { width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.5); cursor: pointer; transition: all 0.3s; }
+        .hero-dot.active { background: var(--secondary); transform: scale(1.2); }
+        .hero-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 50px; height: 50px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; z-index: 20; color: white; font-size: 24px; }
+        .hero-arrow:hover { background: var(--secondary); color: var(--primary); }
+        .hero-arrow.left { left: 20px; }
+        .hero-arrow.right { right: 20px; }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
         
         /* Services */
         .services { padding: 5rem 0; background: white; }
@@ -43,6 +83,205 @@
         .service-card:hover { transform: translateY(-5px); }
         .service-icon { background: var(--primary); color: var(--secondary); font-size: 2.5rem; padding: 1.5rem; text-align: center; }
         .service-content { padding: 1.5rem; }
+        
+        /* Slideshow de Depoimentos */
+        .testimonials { padding: 5rem 0; background: linear-gradient(135deg, var(--primary) 0%, #2d4a7c 100%); color: white; }
+        .testimonials .section-title h2 { color: white; }
+        .testimonials .section-title h2::after { background: white; }
+        .testimonial-slideshow { position: relative; max-width: 800px; margin: 0 auto; overflow: hidden; }
+        .testimonial-slide { text-align: center; padding: 2rem; display: none; }
+        .testimonial-slide.active { display: block; animation: fadeIn 1s ease; }
+        .testimonial-text { font-size: 1.2rem; font-style: italic; margin-bottom: 1rem; }
+        .testimonial-author { font-weight: bold; color: var(--secondary); }
+        .testimonial-controls { display: flex; justify-content: center; gap: 20px; margin-top: 2rem; }
+        .testimonial-btn { background: transparent; border: 2px solid var(--secondary); color: var(--secondary); width: 50px; height: 50px; border-radius: 50%; cursor: pointer; transition: all 0.3s; font-size: 20px; }
+        .testimonial-btn:hover { background: var(--secondary); color: var(--primary); }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Slideshow de Galeria */
+        .gallery { padding: 5rem 0; background: white; }
+        .gallery-slideshow { position: relative; max-width: 1000px; margin: 0 auto; overflow: hidden; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+        .gallery-slide { display: none; }
+        .gallery-slide.active { display: block; animation: fadeIn 1s ease; }
+        .gallery-slide img { width: 100%; height: 500px; object-fit: cover; }
+        .gallery-caption { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.8)); color: white; padding: 2rem; text-align: center; }
+        .gallery-caption h3 { color: var(--secondary); margin-bottom: 0.5rem; }
+        .gallery-thumbnails { display: flex; justify-content: center; gap: 10px; margin-top: 1rem; flex-wrap: wrap; }
+        .gallery-thumb { width: 80px; height: 60px; object-fit: cover; border-radius: 4px; cursor: pointer; opacity: 0.6; transition: all 0.3s; border: 2px solid transparent; }
+        .gallery-thumb:hover { opacity: 1; }
+        .gallery-thumb.active { opacity: 1; border-color: var(--secondary); }
+        .gallery-controls { display: flex; justify-content: center; gap: 20px; margin-top: 2rem; }
+        .gallery-btn { background: var(--primary); border: none; color: white; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; transition: all 0.3s; font-size: 20px; }
+        .gallery-btn:hover { background: var(--secondary); color: var(--primary); }
+        
+        /* ========== DASHBOARD DO ALUNO ========== */
+        .dashboard { padding: 3rem 0; background: var(--light); }
+        .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+        .welcome-message { font-size: 1.5rem; color: var(--primary); }
+        .welcome-message span { color: var(--secondary); font-weight: bold; }
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        
+        /* Cards do Dashboard */
+        .dashboard-card { background: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.3s; }
+        .dashboard-card:hover { transform: translateY(-5px); }
+        .card-title { display: flex; align-items: center; gap: 10px; color: var(--primary); margin-bottom: 1.5rem; font-size: 1.2rem; }
+        .card-title i { color: var(--secondary); font-size: 1.5rem; }
+        
+        /* Perfil do Aluno */
+        .profile-info { display: flex; align-items: center; gap: 1rem; }
+        .profile-avatar { width: 80px; height: 80px; border-radius: 50%; background: var(--primary); color: var(--secondary); display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: bold; }
+        .profile-details h3 { margin-bottom: 0.3rem; }
+        .profile-details p { color: #666; font-size: 0.9rem; margin-bottom: 0.2rem; }
+        .profile-details i { color: var(--secondary); margin-right: 5px; }
+        
+        /* Progresso das Disciplinas */
+        .subject-progress { margin-bottom: 1rem; }
+        .subject-info { display: flex; justify-content: space-between; margin-bottom: 0.3rem; }
+        .progress-bar { height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--secondary); border-radius: 4px; transition: width 0.3s; }
+        
+        /* Lista de Aulas */
+        .aula-item { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 0; border-bottom: 1px solid #e2e8f0; }
+        .aula-item:last-child { border-bottom: none; }
+        .aula-data { font-size: 0.85rem; color: #666; }
+        .aula-status { padding: 0.2rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+        .status-realizada { background: #c6f6d5; color: #22543d; }
+        .status-pendente { background: #feebc8; color: #7b341e; }
+        .status-agendada { background: #bee3f8; color: #1e3a8a; }
+        
+        /* Avaliação Mensal */
+        .avaliacao-card { background: linear-gradient(135deg, var(--primary) 0%, #2d4a7c 100%); color: white; border-radius: 8px; padding: 1.5rem; }
+        .avaliacao-nota { font-size: 3rem; font-weight: bold; color: var(--secondary); text-align: center; margin: 1rem 0; }
+        .avaliacao-comentario { font-style: italic; margin: 1rem 0; }
+        .avaliacao-data { text-align: right; font-size: 0.9rem; opacity: 0.8; }
+        
+        /* Calendário de Aulas */
+        .calendario-item { display: flex; gap: 1rem; padding: 0.8rem 0; border-bottom: 1px solid #e2e8f0; }
+        .calendario-data { min-width: 60px; text-align: center; }
+        .calendario-dia { font-weight: bold; color: var(--primary); }
+        .calendario-mes { font-size: 0.8rem; color: #666; }
+        .calendario-info h4 { font-size: 1rem; margin-bottom: 0.2rem; }
+        .calendario-info p { font-size: 0.85rem; color: #666; }
+        
+        /* Gráfico */
+        .grafico-container { height: 250px; margin-top: 1rem; }
+        
+        /* Recomendações */
+        .recomendacao-item { display: flex; align-items: center; gap: 1rem; padding: 0.8rem 0; border-bottom: 1px solid #e2e8f0; }
+        .recomendacao-item i { color: var(--secondary); font-size: 1.2rem; }
+        .recomendacao-item p { margin: 0; }
+        
+        /* ========== DASHBOARD DO ADMINISTRADOR ========== */
+        .admin-dashboard { padding: 3rem 0; background: var(--light); }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+        .admin-tabs { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem; }
+        .admin-tab { padding: 0.8rem 1.5rem; background: white; border-radius: 8px; cursor: pointer; transition: all 0.3s; font-weight: 600; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .admin-tab:hover { background: var(--secondary); color: var(--primary); }
+        .admin-tab.active { background: var(--primary); color: white; }
+        .admin-tab i { margin-right: 8px; }
+        
+        /* Tabelas do Admin */
+        .admin-table-container { background: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); overflow-x: auto; }
+        .admin-table { width: 100%; border-collapse: collapse; }
+        .admin-table th { text-align: left; padding: 1rem 0.5rem; border-bottom: 2px solid var(--secondary); color: var(--primary); }
+        .admin-table td { padding: 0.8rem 0.5rem; border-bottom: 1px solid #e2e8f0; }
+        .admin-table tr:hover { background: #f8f4e9; }
+        .admin-actions { display: flex; gap: 0.5rem; }
+        .admin-btn { padding: 0.3rem 0.8rem; border: none; border-radius: 4px; cursor: pointer; transition: all 0.3s; font-size: 0.9rem; }
+        .admin-btn-edit { background: var(--info); color: white; }
+        .admin-btn-delete { background: var(--danger); color: white; }
+        .admin-btn-view { background: var(--success); color: white; }
+        .admin-btn-add { background: var(--success); color: white; padding: 0.5rem 1rem; margin-bottom: 1rem; display: inline-block; }
+        
+        /* Modal do Admin */
+        .admin-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 4000; justify-content: center; align-items: center; }
+        .admin-modal-content { background: white; padding: 2rem; border-radius: 8px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; }
+        .admin-modal-content h3 { color: var(--primary); margin-bottom: 1.5rem; }
+        .admin-form-group { margin-bottom: 1rem; }
+        .admin-form-group label { display: block; margin-bottom: 0.3rem; font-weight: 500; }
+        .admin-form-group input, .admin-form-group select, .admin-form-group textarea { width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; }
+        
+        /* Badges */
+        .badge { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; }
+        .badge-admin { background: var(--admin); color: white; }
+        .badge-teacher { background: var(--info); color: white; }
+        .badge-student { background: var(--secondary); color: var(--primary); }
+        
+        /* Pagamentos Section */
+        .pagamentos { padding: 5rem 0; background: var(--light); }
+        .pagamentos-container { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
+        .login-box, .pagamento-box, .historico-box, .recuperar-box { background: white; padding: 2.5rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .tab-container { display: flex; margin-bottom: 2rem; border-bottom: 2px solid #eee; flex-wrap: wrap; }
+        .tab { padding: 0.8rem 1.5rem; cursor: pointer; font-weight: 600; color: var(--dark); transition: all 0.3s; }
+        .tab.active { color: var(--secondary); border-bottom: 2px solid var(--secondary); margin-bottom: -2px; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        /* Métodos de Pagamento */
+        .metodo-pagamento { border: 1px solid #ddd; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; cursor: pointer; transition: all 0.3s; }
+        .metodo-pagamento:hover { border-color: var(--secondary); background: #f8f4e9; }
+        .metodo-pagamento.selected { border-color: var(--secondary); background: #f8f4e9; }
+        .metodo-pagamento h4 { display: flex; align-items: center; gap: 10px; margin-bottom: 0.5rem; }
+        .detalhes-pagamento { display: none; margin-top: 1rem; padding: 1rem; background: #f8f4e9; border-radius: 4px; }
+        .detalhes-pagamento.show { display: block; }
+        
+        /* Upload de Comprovativo */
+        .file-upload { border: 2px dashed #ddd; padding: 2rem; text-align: center; border-radius: 8px; cursor: pointer; transition: all 0.3s; margin: 1rem 0; }
+        .file-upload:hover { border-color: var(--secondary); background: #f8f4e9; }
+        .file-upload input { display: none; }
+        .preview-comprovativo { max-width: 100%; max-height: 200px; margin-top: 1rem; display: none; }
+        .preview-comprovativo.show { display: block; }
+        
+        /* Status de Pagamento */
+        .status-pagamento { padding: 0.5rem; border-radius: 4px; margin: 1rem 0; text-align: center; }
+        .status-pendente { background: #fff3cd; color: #856404; }
+        .status-aprovado { background: #d4edda; color: #155724; }
+        .status-rejeitado { background: #f8d7da; color: #721c24; }
+        
+        /* Histórico de Pagamentos */
+        .historico-item { border-bottom: 1px solid #eee; padding: 1rem 0; }
+        .historico-item:last-child { border-bottom: none; }
+        .historico-header { display: flex; justify-content: space-between; margin-bottom: 0.5rem; }
+        .historico-data { font-size: 0.9rem; color: #666; }
+        .historico-status { font-weight: 600; }
+        
+        /* Loading Spinner */
+        .spinner { display: none; width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--secondary); border-radius: 50%; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        /* Mensagens */
+        .form-message { padding: 10px; border-radius: 4px; margin-top: 15px; display: none; }
+        .form-message.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; display: block; }
+        .form-message.error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; display: block; }
+        .form-message.warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; display: block; }
+        .form-message.info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; display: block; }
+        
+        /* Notificação */
+        .notification { position: fixed; top: 20px; right: 20px; background: white; border-left: 4px solid var(--secondary); padding: 1rem; border-radius: 4px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); z-index: 2000; display: none; animation: slideIn 0.3s ease; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        
+        /* Password Strength */
+        .password-strength { height: 5px; margin-top: 5px; border-radius: 2px; transition: all 0.3s; }
+        .strength-weak { background: var(--danger); width: 33%; }
+        .strength-medium { background: var(--warning); width: 66%; }
+        .strength-strong { background: var(--success); width: 100%; }
+        
+        /* Código de Verificação */
+        .codigo-container { display: flex; gap: 10px; justify-content: center; margin: 20px 0; }
+        .codigo-input { width: 50px; height: 60px; text-align: center; font-size: 24px; border: 2px solid #ddd; border-radius: 8px; }
+        .codigo-input:focus { border-color: var(--secondary); outline: none; }
+        
+        /* Tentativas restantes */
+        .tentativas { font-size: 0.9rem; margin-top: 5px; color: #666; }
+        .tentativas.danger { color: var(--danger); font-weight: bold; }
+        
+        /* Modal de verificação */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 3000; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 2rem; border-radius: 8px; max-width: 400px; width: 90%; }
         
         /* Contact */
         .contact { padding: 5rem 0; background: var(--light); }
@@ -58,28 +297,152 @@
         .form-control:focus { border-color: var(--secondary); outline: none; }
         textarea.form-control { min-height: 120px; resize: vertical; }
         
-        /* Mensagens de status */
-        .form-message { padding: 10px; border-radius: 4px; margin-top: 15px; display: none; }
-        .form-message.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; display: block; }
-        .form-message.error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; display: block; }
-        
         /* Footer */
         footer { background: var(--primary); color: white; padding: 3rem 0 1.5rem; text-align: center; }
         
         /* Responsive */
         @media (max-width: 768px) {
             .mobile-menu { display: block; }
-            nav ul { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: var(--primary); flex-direction: column; padding: 1rem 0; }
+            nav ul { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: var(--primary); flex-direction: column; padding: 1rem 0; z-index: 1000; }
             nav ul.show { display: flex; }
             nav ul li { margin: 0; text-align: center; }
             nav ul li a { display: block; padding: 0.8rem 0; }
             .hero h1 { font-size: 2rem; }
-            .hero { padding: 6rem 0; }
-            .contact-container { grid-template-columns: 1fr; }
+            .hero { height: 60vh; }
+            .hero-arrow { width: 40px; height: 40px; font-size: 20px; }
+            .gallery-slide img { height: 300px; }
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .contact-container, .pagamentos-container { grid-template-columns: 1fr; }
+            .admin-tabs { flex-direction: column; }
+            .notification { left: 20px; right: 20px; width: auto; }
         }
     </style>
 </head>
 <body>
+    <!-- Modal de Verificação de Email -->
+    <div id="verificationModal" class="modal">
+        <div class="modal-content">
+            <h3 style="color: var(--primary); margin-bottom: 1rem;">📧 Verifique seu Email</h3>
+            <p>Enviamos um código de verificação para <strong id="verificationEmail"></strong></p>
+            <p style="font-size: 0.9rem; color: #666; margin-bottom: 1rem;">Digite o código de 6 dígitos abaixo:</p>
+            
+            <div class="codigo-container" id="codigoContainer">
+                <input type="text" class="codigo-input" maxlength="1" onkeyup="moveToNext(this, 0)">
+                <input type="text" class="codigo-input" maxlength="1" onkeyup="moveToNext(this, 1)">
+                <input type="text" class="codigo-input" maxlength="1" onkeyup="moveToNext(this, 2)">
+                <input type="text" class="codigo-input" maxlength="1" onkeyup="moveToNext(this, 3)">
+                <input type="text" class="codigo-input" maxlength="1" onkeyup="moveToNext(this, 4)">
+                <input type="text" class="codigo-input" maxlength="1" onkeyup="moveToNext(this, 5)">
+            </div>
+            
+            <div id="verificationMessage" class="form-message" style="margin-bottom: 1rem;"></div>
+            
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button class="btn" onclick="verifyCode()">Verificar</button>
+                <button class="btn btn-outline" onclick="resendCode()">Reenviar Código</button>
+            </div>
+            
+            <p style="text-align: center; margin-top: 1rem; font-size: 0.9rem;">
+                <a href="#" onclick="closeVerificationModal()">Cancelar</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Modal do Administrador para Adicionar/Editar Utilizadores -->
+    <div id="adminUserModal" class="admin-modal">
+        <div class="admin-modal-content">
+            <h3 id="adminModalTitle">Adicionar Utilizador</h3>
+            <form id="adminUserForm" onsubmit="handleAdminUserSubmit(event)">
+                <input type="hidden" id="adminUserId" value="">
+                
+                <div class="admin-form-group">
+                    <label for="adminNome">Nome Completo *</label>
+                    <input type="text" id="adminNome" required>
+                </div>
+                
+                <div class="admin-form-group">
+                    <label for="adminEmail">Email *</label>
+                    <input type="email" id="adminEmail" required>
+                </div>
+                
+                <div class="admin-form-group">
+                    <label for="adminTelefone">Telefone *</label>
+                    <input type="tel" id="adminTelefone" required>
+                </div>
+                
+                <div class="admin-form-group">
+                    <label for="adminTipo">Tipo de Utilizador *</label>
+                    <select id="adminTipo" required onchange="toggleTeacherFields()">
+                        <option value="aluno">Aluno</option>
+                        <option value="professor">Professor</option>
+                        <option value="admin">Administrador</option>
+                    </select>
+                </div>
+                
+                <div class="admin-form-group" id="adminDisciplinaGroup">
+                    <label for="adminDisciplina">Disciplinas (separadas por vírgula)</label>
+                    <input type="text" id="adminDisciplina" placeholder="Ex: Matemática, Física, Química">
+                </div>
+                
+                <div class="admin-form-group">
+                    <label for="adminPassword">Palavra-passe (deixe em branco para manter)</label>
+                    <input type="password" id="adminPassword">
+                </div>
+                
+                <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
+                    <button type="button" class="btn btn-outline" onclick="closeAdminModal()">Cancelar</button>
+                    <button type="submit" class="btn">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal do Administrador para Avaliação Mensal -->
+    <div id="adminAvaliacaoModal" class="admin-modal">
+        <div class="admin-modal-content">
+            <h3>Lançar Avaliação Mensal</h3>
+            <form id="adminAvaliacaoForm" onsubmit="handleAvaliacaoSubmit(event)">
+                <input type="hidden" id="avaliacaoAlunoId" value="">
+                
+                <div class="admin-form-group">
+                    <label for="avaliacaoAlunoNome">Aluno</label>
+                    <input type="text" id="avaliacaoAlunoNome" readonly disabled>
+                </div>
+                
+                <div class="admin-form-group">
+                    <label for="avaliacaoMes">Mês/Ano</label>
+                    <input type="month" id="avaliacaoMes" required>
+                </div>
+                
+                <div class="admin-form-group">
+                    <label for="avaliacaoNota">Nota (0-20)</label>
+                    <input type="number" id="avaliacaoNota" min="0" max="20" step="0.1" required>
+                </div>
+                
+                <div class="admin-form-group">
+                    <label for="avaliacaoComentario">Comentário</label>
+                    <textarea id="avaliacaoComentario" rows="3" required></textarea>
+                </div>
+                
+                <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
+                    <button type="button" class="btn btn-outline" onclick="closeAvaliacaoModal()">Cancelar</button>
+                    <button type="submit" class="btn">Lançar Avaliação</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notificação flutuante -->
+    <div id="notification" class="notification">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 1.5rem;">📧</span>
+            <div>
+                <strong id="notificationTitle"></strong>
+                <p id="notificationMessage" style="margin: 0;"></p>
+            </div>
+        </div>
+    </div>
+
     <header>
         <div class="container header-container">
             <a href="#" class="logo">
@@ -110,21 +473,48 @@
             </a>
             <div class="mobile-menu">☰</div>
             <nav>
-                <ul>
+                <ul id="nav-menu">
                     <li><a href="#home">Início</a></li>
                     <li><a href="#servicos">Serviços</a></li>
-                    <li><a href="#sobre">Sobre</a></li>
+                    <li><a href="#testimonials">Depoimentos</a></li>
+                    <li><a href="#gallery">Galeria</a></li>
+                    <li><a href="#pagamentos">Pagamentos</a></li>
                     <li><a href="#contacto">Contacto</a></li>
+                    <li id="user-menu" style="display: none;">
+                        <div class="user-info">
+                            <span class="user-name" id="displayName"></span>
+                            <span class="user-badge" id="userBadge" style="display: none;">Admin</span>
+                            <button class="logout-btn" onclick="logout()">Sair</button>
+                        </div>
+                    </li>
                 </ul>
             </nav>
         </div>
     </header>
 
+    <!-- HERO SECTION COM SLIDESHOW -->
     <section class="hero" id="home">
-        <div class="container">
+        <div class="hero-slideshow">
+            <div class="hero-slide active" style="background-image: url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')"></div>
+            <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1503676260728-5176ea92c019?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')"></div>
+            <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')"></div>
+            <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1509062522246-3755977927d7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')"></div>
+        </div>
+        
+        <div class="hero-content">
             <h1>Além do Além - Explicações em Luanda</h1>
             <p>Serviços de explicação domiciliar de excelência em Luanda. Professores qualificados para todas as disciplinas e níveis de ensino.</p>
             <a href="#contacto" class="btn">Contacte-nos Agora</a>
+        </div>
+        
+        <div class="hero-arrow left" onclick="changeHeroSlide(-1)">❮</div>
+        <div class="hero-arrow right" onclick="changeHeroSlide(1)">❯</div>
+        
+        <div class="hero-controls">
+            <div class="hero-dot active" onclick="goToHeroSlide(0)"></div>
+            <div class="hero-dot" onclick="goToHeroSlide(1)"></div>
+            <div class="hero-dot" onclick="goToHeroSlide(2)"></div>
+            <div class="hero-dot" onclick="goToHeroSlide(3)"></div>
         </div>
     </section>
 
@@ -172,6 +562,636 @@
         </div>
     </section>
 
+    <!-- SLIDESHOW DE DEPOIMENTOS -->
+    <section class="testimonials" id="testimonials">
+        <div class="container">
+            <div class="section-title">
+                <h2>O que dizem nossos alunos</h2>
+                <p>Depoimentos de clientes satisfeitos</p>
+            </div>
+            
+            <div class="testimonial-slideshow">
+                <div class="testimonial-slide active">
+                    <p class="testimonial-text">"O professor é muito dedicado e paciente. Meu filho melhorou muito as notas em Matemática. Recomendo!"</p>
+                    <p class="testimonial-author">- Maria Santos, Mãe de aluno</p>
+                </div>
+                
+                <div class="testimonial-slide">
+                    <p class="testimonial-text">"Consegui passar no exame de admissão graças às aulas. Professores excelentes e material didático de qualidade."</p>
+                    <p class="testimonial-author">- João Pedro, Universitário</p>
+                </div>
+                
+                <div class="testimonial-slide">
+                    <p class="testimonial-text">"O site que desenvolveram para minha empresa ficou incrível! Muito profissional e entregaram antes do prazo."</p>
+                    <p class="testimonial-author">- Ana Paula, Empreendedora</p>
+                </div>
+                
+                <div class="testimonial-slide">
+                    <p class="testimonial-text">"Aulas de Física e Química muito boas. Explicações claras e exercícios práticos. Nota 10!"</p>
+                    <p class="testimonial-author">- Carlos Ferreira, Estudante Secundário</p>
+                </div>
+            </div>
+            
+            <div class="testimonial-controls">
+                <button class="testimonial-btn" onclick="changeTestimonialSlide(-1)">❮</button>
+                <button class="testimonial-btn" onclick="changeTestimonialSlide(1)">❯</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDESHOW DE GALERIA -->
+    <section class="gallery" id="gallery">
+        <div class="container">
+            <div class="section-title">
+                <h2>Nossa Galeria</h2>
+                <p>Momentos das nossas aulas e eventos</p>
+            </div>
+            
+            <div class="gallery-slideshow">
+                <!-- Imagens anteriores mantidas -->
+                <div class="gallery-slide active">
+                    <img src="https://images.unsplash.com/photo-1577896851231-70ef18881754?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Aula em grupo">
+                    <div class="gallery-caption">
+                        <h3>Aulas em Grupo</h3>
+                        <p>Turmas reduzidas para melhor aprendizado</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-slide">
+                    <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Aula individual">
+                    <div class="gallery-caption">
+                        <h3>Aulas Individuais</h3>
+                        <p>Atenção personalizada para cada aluno</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-slide">
+                    <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Laboratório">
+                    <div class="gallery-caption">
+                        <h3>Aulas Práticas</h3>
+                        <p>Experiências em laboratório para Física e Química</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-slide">
+                    <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Formatura">
+                    <div class="gallery-caption">
+                        <h3>Resultados</h3>
+                        <p>Nossos alunos aprovados nos exames</p>
+                    </div>
+                </div>
+                
+                <!-- NOVAS IMAGENS -->
+                <div class="gallery-slide">
+                    <img src="https://i.postimg.cc/vm0j9xHB/alem15.webp" alt="Aula de Matemática">
+                    <div class="gallery-caption">
+                        <h3>Aula de Matemática</h3>
+                        <p>Explicações detalhadas para o ensino secundário</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-slide">
+                    <img src="https://i.postimg.cc/8kJ3J58p/alem14.jpg" alt="Aula de Física">
+                    <div class="gallery-caption">
+                        <h3>Aula de Física</h3>
+                        <p>Experiências práticas e teoria aplicada</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-slide">
+                    <img src="https://i.postimg.cc/pLx16JmN/alem-13.jpg" alt="Aula de Química">
+                    <div class="gallery-caption">
+                        <h3>Aula de Química</h3>
+                        <p>Laboratório e experimentos seguros</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-slide">
+                    <img src="https://i.postimg.cc/vZzSFxn0/alem12.jpg" alt="Aula de Português">
+                    <div class="gallery-caption">
+                        <h3>Aula de Português</h3>
+                        <p>Aprimorando a escrita e interpretação</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-slide">
+                    <img src="https://i.postimg.cc/NMyNHNzH/alem11.jpg" alt="Aula de Inglês">
+                    <div class="gallery-caption">
+                        <h3>Aula de Inglês</h3>
+                        <p>Conversação e gramática para todos os níveis</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="gallery-thumbnails">
+                <!-- Thumbnails das imagens anteriores -->
+                <img src="https://images.unsplash.com/photo-1577896851231-70ef18881754?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" class="gallery-thumb active" onclick="goToGallerySlide(0)" alt="Thumb 1">
+                <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" class="gallery-thumb" onclick="goToGallerySlide(1)" alt="Thumb 2">
+                <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" class="gallery-thumb" onclick="goToGallerySlide(2)" alt="Thumb 3">
+                <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" class="gallery-thumb" onclick="goToGallerySlide(3)" alt="Thumb 4">
+                
+                <!-- Thumbnails das novas imagens -->
+                <img src="https://i.postimg.cc/vm0j9xHB/alem15.webp" class="gallery-thumb" onclick="goToGallerySlide(4)" alt="Thumb 5">
+                <img src="https://i.postimg.cc/8kJ3J58p/alem14.jpg" class="gallery-thumb" onclick="goToGallerySlide(5)" alt="Thumb 6">
+                <img src="https://i.postimg.cc/pLx16JmN/alem-13.jpg" class="gallery-thumb" onclick="goToGallerySlide(6)" alt="Thumb 7">
+                <img src="https://i.postimg.cc/vZzSFxn0/alem12.jpg" class="gallery-thumb" onclick="goToGallerySlide(7)" alt="Thumb 8">
+                <img src="https://i.postimg.cc/NMyNHNzH/alem11.jpg" class="gallery-thumb" onclick="goToGallerySlide(8)" alt="Thumb 9">
+            </div>
+            
+            <div class="gallery-controls">
+                <button class="gallery-btn" onclick="changeGallerySlide(-1)">❮</button>
+                <button class="gallery-btn" onclick="changeGallerySlide(1)">❯</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECÇÃO DE PAGAMENTOS -->
+    <section class="pagamentos" id="pagamentos">
+        <div class="container">
+            <div class="section-title">
+                <h2>Área de Pagamentos</h2>
+                <p>Faça login, efectue pagamentos e envie comprovativos</p>
+            </div>
+            
+            <div class="pagamentos-container">
+                <!-- Login Box -->
+                <div class="login-box" id="loginBox">
+                    <h3 style="margin-bottom: 1.5rem; color: var(--primary); display: flex; align-items: center; gap: 10px;">
+                        <span>🔐</span> Login do Cliente
+                    </h3>
+                    
+                    <div class="tab-container">
+                        <div class="tab active" onclick="showTab('login')">Entrar</div>
+                        <div class="tab" onclick="showTab('register')">Registar</div>
+                        <div class="tab" onclick="showTab('recuperar')">Recuperar Senha</div>
+                    </div>
+                    
+                    <!-- Login Form -->
+                    <div id="login-tab" class="tab-content active">
+                        <form id="loginForm" onsubmit="handleLogin(event)">
+                            <div class="form-group">
+                                <label for="loginEmail">Email</label>
+                                <input type="email" id="loginEmail" class="form-control" required 
+                                       pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                                       title="Introduza um email válido">
+                            </div>
+                            <div class="form-group">
+                                <label for="loginPassword">Palavra-passe</label>
+                                <input type="password" id="loginPassword" class="form-control" required minlength="8">
+                            </div>
+                            
+                            <!-- reCAPTCHA -->
+                            <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" data-callback="onLoginCaptchaSuccess"></div>
+                            
+                            <!-- Tentativas restantes -->
+                            <div id="loginAttempts" class="tentativas"></div>
+                            
+                            <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;" id="loginButton">Entrar</button>
+                        </form>
+                    </div>
+                    
+                    <!-- Register Form -->
+                    <div id="register-tab" class="tab-content">
+                        <form id="registerForm" onsubmit="handleRegister(event)">
+                            <div class="form-group">
+                                <label for="regNome">Nome Completo</label>
+                                <input type="text" id="regNome" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="regEmail">Email</label>
+                                <input type="email" id="regEmail" class="form-control" required
+                                       pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
+                            </div>
+                            <div class="form-group">
+                                <label for="regTelefone">Telefone</label>
+                                <input type="tel" id="regTelefone" class="form-control" required
+                                       pattern="[0-9]{9,}" title="Mínimo 9 dígitos">
+                            </div>
+                            <div class="form-group">
+                                <label for="regPassword">Palavra-passe (mínimo 8 caracteres)</label>
+                                <input type="password" id="regPassword" class="form-control" required minlength="8"
+                                       onkeyup="checkPasswordStrength(this.value)">
+                                <div class="password-strength" id="passwordStrength"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="regConfirmPassword">Confirmar Palavra-passe</label>
+                                <input type="password" id="regConfirmPassword" class="form-control" required minlength="8">
+                            </div>
+                            
+                            <!-- reCAPTCHA -->
+                            <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" data-callback="onRegisterCaptchaSuccess"></div>
+                            
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="termsCheckbox" required>
+                                    Aceito os <a href="#" style="color: var(--secondary);">termos e condições</a> e a <a href="#" style="color: var(--secondary);">política de privacidade</a>
+                                </label>
+                            </div>
+                            <button type="submit" class="btn" style="width: 100%;" id="registerButton">Registar</button>
+                        </form>
+                    </div>
+                    
+                    <!-- Recuperar Senha Form -->
+                    <div id="recuperar-tab" class="tab-content">
+                        <form id="recuperarForm" onsubmit="handleRecuperarSenha(event)">
+                            <p style="margin-bottom: 1rem;">Digite seu email para receber um link de recuperação de senha.</p>
+                            
+                            <div class="form-group">
+                                <label for="recEmail">Email</label>
+                                <input type="email" id="recEmail" class="form-control" required
+                                       pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
+                            </div>
+                            
+                            <!-- reCAPTCHA -->
+                            <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" data-callback="onRecuperarCaptchaSuccess"></div>
+                            
+                            <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;" id="recuperarButton">Enviar Link de Recuperação</button>
+                        </form>
+                    </div>
+                    
+                    <!-- Mensagem de status do login -->
+                    <div id="loginMessage" class="form-message"></div>
+                    <div class="spinner" id="loginSpinner"></div>
+                </div>
+                
+                <!-- Pagamento Box (inicialmente escondido, aparece após login) -->
+                <div class="pagamento-box" id="pagamentoBox" style="display: none;">
+                    <h3 style="margin-bottom: 1.5rem; color: var(--primary); display: flex; align-items: center; gap: 10px;">
+                        <span>💰</span> Efectuar Pagamento
+                    </h3>
+                    
+                    <!-- Status do pagamento -->
+                    <div id="paymentStatus" class="status-pagamento" style="display: none;"></div>
+                    
+                    <form id="paymentForm" onsubmit="handlePaymentSubmit(event)">
+                        <!-- Seleção do serviço -->
+                        <div class="form-group">
+                            <label for="servicoPagamento">Serviço</label>
+                            <select id="servicoPagamento" class="form-control" required onchange="updateValor()">
+                                <option value="">Seleccione um serviço</option>
+                                <option value="primario" data-valor="5000">Primário - 5.000 AOA/aula</option>
+                                <option value="secundario" data-valor="8000">Secundário - 8.000 AOA/aula</option>
+                                <option value="universitario" data-valor="15000">Universitário - 15.000 AOA/aula</option>
+                                <option value="site-basico" data-valor="50000">Site Básico - 50.000 AOA</option>
+                                <option value="site-profissional" data-valor="100000">Site Profissional - 100.000 AOA</option>
+                                <option value="ecommerce" data-valor="250000">E-commerce - 250.000 AOA</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Número de aulas -->
+                        <div class="form-group" id="numAulasGroup" style="display: none;">
+                            <label for="numAulas">Número de Aulas</label>
+                            <input type="number" id="numAulas" class="form-control" min="1" value="1" onchange="updateValor()">
+                        </div>
+                        
+                        <!-- Valor total -->
+                        <div class="form-group">
+                            <label>Valor a Pagar</label>
+                            <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary);" id="valorTotal">0 AOA</div>
+                        </div>
+                        
+                        <!-- Métodos de Pagamento com dados do Banco Atlântico -->
+                        <div class="form-group">
+                            <label>Método de Pagamento</label>
+                            <div id="metodosPagamento">
+                                <!-- Banco Atlântico -->
+                                <div class="metodo-pagamento" onclick="selectMetodo('atlantico')">
+                                    <h4>🏦 Banco Atlântico</h4>
+                                    <p>Transferência bancária para o Banco Atlântico</p>
+                                    <div class="detalhes-pagamento" id="detalhes-atlantico">
+                                        <p><strong>Banco:</strong> Banco Atlântico</p>
+                                        <p><strong>Número de Conta:</strong> 005500004363225010140</p>
+                                        <p><strong>IBAN:</strong> AO06.0055.0000.4363.2250.1014.0</p>
+                                        <p><strong>Nome:</strong> Além do Além, Lda</p>
+                                        <p><strong>NIF:</strong> 5000123456</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="metodo-pagamento" onclick="selectMetodo('multicaixa')">
+                                    <h4>💳 Multicaixa</h4>
+                                    <p>Pague com cartão Multicaixa</p>
+                                    <div class="detalhes-pagamento" id="detalhes-multicaixa">
+                                        <p><strong>Banco:</strong> Banco Atlântico</p>
+                                        <p><strong>Número da Conta:</strong> 005500004363225010140</p>
+                                        <p><strong>Entidade:</strong> 12345</p>
+                                        <p><strong>Referência:</strong> Gerar referência no caixa automático</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="metodo-pagamento" onclick="selectMetodo('express')">
+                                    <h4>📱 Express</h4>
+                                    <p>Pague via Multicaixa Express</p>
+                                    <div class="detalhes-pagamento" id="detalhes-express">
+                                        <p><strong>Número de Telefone:</strong> 922 221 997</p>
+                                        <p><strong>Nome:</strong> Além do Além</p>
+                                        <p><strong>Conta associada:</strong> 005500004363225010140</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Upload de Comprovativo -->
+                        <div class="form-group">
+                            <label>Comprovativo de Pagamento</label>
+                            <div class="file-upload" onclick="document.getElementById('comprovativo').click()">
+                                <input type="file" id="comprovativo" accept="image/*,.pdf" onchange="previewFile(this)" required>
+                                <p>📎 Clique para seleccionar o comprovativo</p>
+                                <p style="font-size: 0.8rem; color: #666;">Formatos aceites: JPG, PNG, PDF (max. 5MB)</p>
+                            </div>
+                            <img id="preview" class="preview-comprovativo" alt="Pré-visualização do comprovativo">
+                        </div>
+                        
+                        <!-- Informações adicionais -->
+                        <div class="form-group">
+                            <label for="observacoesPagamento">Observações (opcional)</label>
+                            <textarea id="observacoesPagamento" class="form-control" rows="2" placeholder="Número de aulas, horários preferenciais, etc."></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-success" style="width: 100%;">📤 Enviar Comprovativo</button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Histórico de Pagamentos (aparece após login) -->
+            <div class="historico-box" id="historicoBox" style="display: none; margin-top: 2rem;">
+                <h3 style="margin-bottom: 1.5rem; color: var(--primary);">📋 Histórico de Pagamentos</h3>
+                <div id="historicoList">
+                    <!-- Histórico será carregado aqui via JavaScript -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DASHBOARD DO ALUNO (aparece após login de aluno) -->
+    <section class="dashboard" id="dashboard" style="display: none;">
+        <div class="container">
+            <div class="dashboard-header">
+                <h2 class="welcome-message">Bem-vindo de volta, <span id="studentName"></span>! 👋</h2>
+                <button class="btn btn-outline" onclick="showPaymentArea()">💰 Fazer Pagamento</button>
+            </div>
+            
+            <div class="dashboard-grid">
+                <!-- Card 1: Perfil do Aluno -->
+                <div class="dashboard-card">
+                    <div class="card-title">
+                        <i class="fas fa-user-graduate"></i>
+                        <h3>Meu Perfil</h3>
+                    </div>
+                    <div class="profile-info">
+                        <div class="profile-avatar" id="studentAvatar">A</div>
+                        <div class="profile-details">
+                            <h3 id="profileName">João Silva</h3>
+                            <p><i class="fas fa-envelope"></i> <span id="profileEmail">joao@email.com</span></p>
+                            <p><i class="fas fa-phone"></i> <span id="profilePhone">922 221 997</span></p>
+                            <p><i class="fas fa-calendar"></i> Membro desde: <span id="profileSince">Jan 2024</span></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card 2: Progresso nas Disciplinas -->
+                <div class="dashboard-card">
+                    <div class="card-title">
+                        <i class="fas fa-chart-line"></i>
+                        <h3>Progresso nas Disciplinas</h3>
+                    </div>
+                    <div id="disciplinasProgress">
+                        <!-- Preenchido via JavaScript -->
+                    </div>
+                </div>
+                
+                <!-- Card 3: Estatísticas de Aulas -->
+                <div class="dashboard-card">
+                    <div class="card-title">
+                        <i class="fas fa-calendar-check"></i>
+                        <h3>Resumo de Aulas</h3>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; text-align: center;">
+                        <div>
+                            <div style="font-size: 2rem; color: var(--secondary);" id="totalAulas">24</div>
+                            <div style="font-size: 0.9rem;">Total de Aulas</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 2rem; color: var(--success);" id="aulasMes">12</div>
+                            <div style="font-size: 0.9rem;">Este Mês</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 2rem; color: var(--info);" id="aulasRestantes">8</div>
+                            <div style="font-size: 0.9rem;">Restantes</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 2rem; color: var(--warning);" id="mediaAvaliacao">16.5</div>
+                            <div style="font-size: 0.9rem;">Média/20</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Segunda linha do Dashboard -->
+            <div class="dashboard-grid">
+                <!-- Card 4: Últimas Aulas -->
+                <div class="dashboard-card">
+                    <div class="card-title">
+                        <i class="fas fa-history"></i>
+                        <h3>Últimas Aulas</h3>
+                    </div>
+                    <div id="ultimasAulas">
+                        <!-- Preenchido via JavaScript -->
+                    </div>
+                </div>
+                
+                <!-- Card 5: Avaliação Mensal -->
+                <div class="dashboard-card avaliacao-card" id="avaliacaoCard">
+                    <div class="card-title" style="color: white;">
+                        <i class="fas fa-star"></i>
+                        <h3 style="color: white;">Avaliação do Mês</h3>
+                    </div>
+                    <div id="avaliacaoContent">
+                        <!-- Preenchido via JavaScript -->
+                    </div>
+                </div>
+                
+                <!-- Card 6: Próximas Aulas -->
+                <div class="dashboard-card">
+                    <div class="card-title">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h3>Próximas Aulas</h3>
+                    </div>
+                    <div id="proximasAulas">
+                        <!-- Preenchido via JavaScript -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Terceira linha: Gráfico e Recomendações -->
+            <div class="dashboard-grid">
+                <!-- Card 7: Gráfico de Evolução -->
+                <div class="dashboard-card">
+                    <div class="card-title">
+                        <i class="fas fa-chart-bar"></i>
+                        <h3>Evolução das Notas</h3>
+                    </div>
+                    <div class="grafico-container">
+                        <canvas id="progressChart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Card 8: Recomendações do Professor -->
+                <div class="dashboard-card">
+                    <div class="card-title">
+                        <i class="fas fa-lightbulb"></i>
+                        <h3>Recomendações de Estudo</h3>
+                    </div>
+                    <div id="recomendacoes">
+                        <!-- Preenchido via JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DASHBOARD DO ADMINISTRADOR (aparece após login de admin) -->
+    <section class="admin-dashboard" id="adminDashboard" style="display: none;">
+        <div class="container">
+            <div class="admin-header">
+                <h2 class="welcome-message">Painel do Administrador 👑</h2>
+                <div>
+                    <span style="margin-right: 1rem;">Bem-vindo, <strong id="adminName"></strong></span>
+                </div>
+            </div>
+            
+            <div class="admin-tabs">
+                <div class="admin-tab active" onclick="showAdminTab('alunos')">
+                    <i class="fas fa-user-graduate"></i> Alunos
+                </div>
+                <div class="admin-tab" onclick="showAdminTab('professores')">
+                    <i class="fas fa-chalkboard-teacher"></i> Professores
+                </div>
+                <div class="admin-tab" onclick="showAdminTab('admins')">
+                    <i class="fas fa-user-cog"></i> Administradores
+                </div>
+                <div class="admin-tab" onclick="showAdminTab('relatorios')">
+                    <i class="fas fa-chart-pie"></i> Relatórios
+                </div>
+            </div>
+            
+            <!-- Tab: Alunos -->
+            <div id="adminAlunosTab" class="admin-tab-content" style="display: block;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3>Gestão de Alunos</h3>
+                    <button class="admin-btn-add" onclick="openAddUserModal('aluno')">
+                        <i class="fas fa-plus"></i> Novo Aluno
+                    </button>
+                </div>
+                <div class="admin-table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th>Telefone</th>
+                                <th>Disciplinas</th>
+                                <th>Progresso</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="alunosTableBody">
+                            <!-- Preenchido via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Tab: Professores -->
+            <div id="adminProfessoresTab" class="admin-tab-content" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3>Gestão de Professores</h3>
+                    <button class="admin-btn-add" onclick="openAddUserModal('professor')">
+                        <i class="fas fa-plus"></i> Novo Professor
+                    </button>
+                </div>
+                <div class="admin-table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th>Telefone</th>
+                                <th>Disciplinas</th>
+                                <th>Alunos</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="professoresTableBody">
+                            <!-- Preenchido via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Tab: Administradores -->
+            <div id="adminAdminsTab" class="admin-tab-content" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3>Gestão de Administradores</h3>
+                    <button class="admin-btn-add" onclick="openAddUserModal('admin')">
+                        <i class="fas fa-plus"></i> Novo Administrador
+                    </button>
+                </div>
+                <div class="admin-table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th>Telefone</th>
+                                <th>Nível</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminsTableBody">
+                            <!-- Preenchido via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Tab: Relatórios -->
+            <div id="adminRelatoriosTab" class="admin-tab-content" style="display: none;">
+                <h3>Relatórios do Sistema</h3>
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <div class="card-title">
+                            <i class="fas fa-users"></i>
+                            <h3>Total de Utilizadores</h3>
+                        </div>
+                        <div style="text-align: center; font-size: 3rem; color: var(--primary);" id="totalUsuarios">0</div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <div class="card-title">
+                            <i class="fas fa-chart-line"></i>
+                            <h3>Média Geral</h3>
+                        </div>
+                        <div style="text-align: center; font-size: 3rem; color: var(--secondary);" id="mediaGeral">0.0</div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <div class="card-title">
+                            <i class="fas fa-calendar"></i>
+                            <h3>Aulas este Mês</h3>
+                        </div>
+                        <div style="text-align: center; font-size: 3rem; color: var(--success);" id="aulasMesTotal">0</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 2rem;">
+                    <button class="btn" onclick="exportarRelatorio()">
+                        <i class="fas fa-download"></i> Exportar Relatório Completo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section class="contact" id="contacto">
         <div class="container">
             <div class="section-title">
@@ -206,7 +1226,7 @@
                         <div class="contact-icon">📧</div>
                         <div class="contact-details">
                             <h4>Email</h4>
-                            <p>contato@alemdoalem.co.ao<br>nai374202@gmail.com</p>
+                            <p>nai374202@gmail.com</p>
                         </div>
                     </div>
                 </div>
@@ -214,9 +1234,7 @@
                 <div class="contact-form">
                     <h3>Envie sua Mensagem</h3>
                     
-                    <!-- FORMULÁRIO QUE ENVIA PARA EMAIL -->
                     <form action="https://formsubmit.co/nai374202@gmail.com" method="POST">
-                        <!-- Campos ocultos para configuração -->
                         <input type="hidden" name="_captcha" value="false">
                         <input type="hidden" name="_subject" value="📧 NOVO CONTACTO - Site Além do Além">
                         <input type="hidden" name="_template" value="table">
@@ -257,13 +1275,6 @@
                         
                         <button type="submit" class="btn">📧 Enviar Mensagem</button>
                     </form>
-                    
-                    <div style="margin-top: 1rem; text-align: center;">
-                        <p style="font-size: 0.9rem; color: #666;">
-                            <strong>Ou contacte directamente:</strong><br>
-                            <a href="https://wa.me/244922221997" style="color: var(--primary);">📞 WhatsApp: 922 221 997</a>
-                        </p>
-                    </div>
                 </div>
             </div>
         </div>
@@ -271,25 +1282,1583 @@
 
     <footer>
         <div class="container">
-            <p><strong>Contacte-nos:</strong> 📞 922 221 997 | 📧 contato@alemdoalem.co.ao / nai374202@gmail.com | 📍 Luanda, Angola</p>
+            <p><strong>Contacte-nos:</strong> 📞 922 221 997 | 📧 nai374202@gmail.com | 📍 Luanda, Angola</p>
             <p style="margin-top: 1rem; color: #d4af37;">&copy; 2024 Além do Além. Todos os direitos reservados.</p>
         </div>
     </footer>
 
     <script>
+        // ==================== VARIÁVEIS GLOBAIS ====================
+        const ENCRYPTION_KEY = 'alem-do-alem-2024-seguro';
+        const ADMIN_EMAIL = 'nai374202@gmail.com'; // Email do administrador principal
+        
+        let users = JSON.parse(localStorage.getItem('alem_do_alem_users')) || [];
+        let currentUser = JSON.parse(sessionStorage.getItem('currentUser')) || null;
+        
+        // Dados de exemplo para professores e alunos
+        let professores = JSON.parse(localStorage.getItem('alem_do_alem_professores')) || [];
+        let avaliacoes = JSON.parse(localStorage.getItem('alem_do_alem_avaliacoes')) || [];
+        let aulas = JSON.parse(localStorage.getItem('alem_do_alem_aulas')) || [];
+        
+        // Controle de tentativas de login
+        let loginAttempts = {};
+        const MAX_ATTEMPTS = 5;
+        const BLOCK_TIME = 15 * 60 * 1000; // 15 minutos
+        
+        // Código de verificação
+        let verificationCode = '';
+        let pendingUserData = null;
+        
+        // reCAPTCHA
+        let loginCaptchaPassed = false;
+        let registerCaptchaPassed = false;
+        let recuperarCaptchaPassed = false;
+
+        // Gráfico
+        let progressChart = null;
+
+        // Slideshow variables
+        let heroInterval;
+        let testimonialInterval;
+        let galleryInterval;
+
+        // ==================== FUNÇÕES DE NOTIFICAÇÃO ====================
+        function showNotification(title, message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const titleEl = document.getElementById('notificationTitle');
+            const messageEl = document.getElementById('notificationMessage');
+            
+            if (type === 'success') {
+                notification.style.borderLeftColor = 'var(--success)';
+            } else if (type === 'error') {
+                notification.style.borderLeftColor = 'var(--danger)';
+            } else {
+                notification.style.borderLeftColor = 'var(--secondary)';
+            }
+            
+            titleEl.textContent = title;
+            messageEl.textContent = message;
+            
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 5000);
+        }
+
+        // ==================== FUNÇÕES DE CRIPTOGRAFIA ====================
+        function encryptData(data) {
+            return btoa(JSON.stringify(data) + ENCRYPTION_KEY);
+        }
+        
+        function decryptData(encryptedData) {
+            try {
+                const decoded = atob(encryptedData);
+                return JSON.parse(decoded.replace(ENCRYPTION_KEY, ''));
+            } catch {
+                return null;
+            }
+        }
+        
+        async function hashPassword(password) {
+            return btoa(password + ENCRYPTION_KEY);
+        }
+
+        // ==================== FUNÇÕES DE VERIFICAÇÃO DE EMAIL ====================
+        function generateVerificationCode() {
+            return Math.floor(100000 + Math.random() * 900000).toString();
+        }
+
+        async function sendVerificationEmail(email, code) {
+            try {
+                const formData = new FormData();
+                formData.append('_subject', '🔐 Código de Verificação - Além do Além');
+                formData.append('_template', 'table');
+                formData.append('_captcha', 'false');
+                formData.append('email', email);
+                formData.append('codigo', code);
+                formData.append('mensagem', `Seu código de verificação é: ${code}\n\nDigite este código no site para confirmar seu email.`);
+                
+                await fetch('https://formsubmit.co/' + email, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                return true;
+            } catch (error) {
+                console.error('Erro ao enviar email:', error);
+                return false;
+            }
+        }
+
+        function openVerificationModal(email, userData) {
+            verificationCode = generateVerificationCode();
+            pendingUserData = userData;
+            
+            document.getElementById('verificationEmail').textContent = email;
+            document.getElementById('verificationModal').style.display = 'flex';
+            
+            // Limpar campos
+            document.querySelectorAll('.codigo-input').forEach(input => input.value = '');
+            document.getElementById('verificationMessage').style.display = 'none';
+            
+            // Enviar código por email
+            sendVerificationEmail(email, verificationCode);
+            
+            showNotification(
+                'Código Enviado! 📧',
+                'Enviamos um código de verificação para seu email.',
+                'info'
+            );
+        }
+
+        function closeVerificationModal() {
+            document.getElementById('verificationModal').style.display = 'none';
+            verificationCode = '';
+            pendingUserData = null;
+        }
+
+        function moveToNext(input, index) {
+            if (input.value.length === 1) {
+                const next = document.querySelectorAll('.codigo-input')[index + 1];
+                if (next) next.focus();
+            }
+            
+            // Verificar se todos os campos estão preenchidos
+            const allFilled = Array.from(document.querySelectorAll('.codigo-input')).every(i => i.value.length === 1);
+            if (allFilled) {
+                verifyCode();
+            }
+        }
+
+        function verifyCode() {
+            const inputs = document.querySelectorAll('.codigo-input');
+            const enteredCode = Array.from(inputs).map(i => i.value).join('');
+            const messageDiv = document.getElementById('verificationMessage');
+            
+            if (enteredCode.length !== 6) {
+                messageDiv.className = 'form-message error';
+                messageDiv.textContent = 'Por favor, digite o código completo.';
+                messageDiv.style.display = 'block';
+                return;
+            }
+            
+            if (enteredCode === verificationCode) {
+                messageDiv.className = 'form-message success';
+                messageDiv.textContent = 'Email verificado com sucesso!';
+                messageDiv.style.display = 'block';
+                
+                // Completar o registo
+                setTimeout(() => {
+                    completeRegistration(pendingUserData);
+                }, 1000);
+            } else {
+                messageDiv.className = 'form-message error';
+                messageDiv.textContent = 'Código inválido. Tente novamente.';
+                messageDiv.style.display = 'block';
+                
+                // Limpar campos
+                inputs.forEach(input => input.value = '');
+                inputs[0].focus();
+            }
+        }
+
+        async function resendCode() {
+            if (pendingUserData) {
+                verificationCode = generateVerificationCode();
+                await sendVerificationEmail(pendingUserData.email, verificationCode);
+                
+                showNotification(
+                    'Código Reenviado! 📧',
+                    'Um novo código foi enviado para seu email.',
+                    'info'
+                );
+            }
+        }
+
+        // ==================== FUNÇÕES DE VERIFICAÇÃO DE SENHA ====================
+        function checkPasswordStrength(password) {
+            const strengthDiv = document.getElementById('passwordStrength');
+            let strength = 0;
+            
+            if (password.length >= 8) strength++;
+            if (password.match(/[a-z]/)) strength++;
+            if (password.match(/[A-Z]/)) strength++;
+            if (password.match(/[0-9]/)) strength++;
+            if (password.match(/[^a-zA-Z0-9]/)) strength++;
+            
+            strengthDiv.className = 'password-strength';
+            if (strength <= 2) {
+                strengthDiv.classList.add('strength-weak');
+            } else if (strength <= 4) {
+                strengthDiv.classList.add('strength-medium');
+            } else {
+                strengthDiv.classList.add('strength-strong');
+            }
+        }
+
+        // ==================== FUNÇÕES DE CONTROLE DE TENTATIVAS ====================
+        function checkLoginAttempts(email) {
+            const now = Date.now();
+            const attempts = loginAttempts[email];
+            
+            if (attempts) {
+                if (attempts.count >= MAX_ATTEMPTS) {
+                    if (now - attempts.lastAttempt < BLOCK_TIME) {
+                        const minutesLeft = Math.ceil((BLOCK_TIME - (now - attempts.lastAttempt)) / 60000);
+                        return {
+                            blocked: true,
+                            minutes: minutesLeft
+                        };
+                    } else {
+                        // Resetar tentativas após o tempo de bloqueio
+                        delete loginAttempts[email];
+                    }
+                }
+            }
+            
+            return { blocked: false };
+        }
+
+        function registerLoginAttempt(email, success = false) {
+            if (!loginAttempts[email]) {
+                loginAttempts[email] = {
+                    count: 0,
+                    lastAttempt: Date.now()
+                };
+            }
+            
+            if (!success) {
+                loginAttempts[email].count++;
+                loginAttempts[email].lastAttempt = Date.now();
+            } else {
+                // Resetar tentativas em caso de sucesso
+                delete loginAttempts[email];
+            }
+            
+            updateLoginAttemptsDisplay(email);
+        }
+
+        function updateLoginAttemptsDisplay(email) {
+            const attemptsDiv = document.getElementById('loginAttempts');
+            const attempts = loginAttempts[email];
+            
+            if (attempts && attempts.count > 0) {
+                const remaining = MAX_ATTEMPTS - attempts.count;
+                if (remaining > 0) {
+                    attemptsDiv.textContent = `Tentativas restantes: ${remaining}`;
+                    attemptsDiv.className = 'tentativas';
+                } else {
+                    const check = checkLoginAttempts(email);
+                    if (check.blocked) {
+                        attemptsDiv.textContent = `Conta bloqueada. Tente novamente em ${check.minutes} minutos.`;
+                        attemptsDiv.className = 'tentativas danger';
+                    }
+                }
+            } else {
+                attemptsDiv.textContent = '';
+            }
+        }
+
+        // ==================== FUNÇÕES DE CAPTCHA ====================
+        function onLoginCaptchaSuccess() {
+            loginCaptchaPassed = true;
+        }
+
+        function onRegisterCaptchaSuccess() {
+            registerCaptchaPassed = true;
+        }
+
+        function onRecuperarCaptchaSuccess() {
+            recuperarCaptchaPassed = true;
+        }
+
+        // ==================== FUNÇÕES DE REGISTO ====================
+        async function completeRegistration(userData) {
+            try {
+                const hashedPassword = await hashPassword(userData.password);
+                const newUser = {
+                    id: Date.now(),
+                    nome: userData.nome,
+                    email: userData.email,
+                    telefone: userData.telefone,
+                    tipo: 'aluno', // Por defeito, novos registos são alunos
+                    password: hashedPassword,
+                    verificado: true,
+                    verificadoEm: new Date().toISOString(),
+                    createdAt: new Date().toISOString(),
+                    disciplinas: [],
+                    progresso: {},
+                    avaliacoes: [],
+                    pagamentos: []
+                };
+                
+                users.push(newUser);
+                localStorage.setItem('alem_do_alem_users', JSON.stringify(users));
+                
+                // Enviar email de notificação para o administrador
+                await sendRegistrationEmail(userData);
+                
+                closeVerificationModal();
+                
+                showNotification(
+                    'Registo Concluído! 🎉',
+                    'Sua conta foi criada com sucesso. Faça login para continuar.',
+                    'success'
+                );
+                
+                document.getElementById('registerForm').reset();
+                showTab('login');
+                
+            } catch (error) {
+                showNotification(
+                    'Erro no Registo ❌',
+                    'Ocorreu um erro ao completar o registo.',
+                    'error'
+                );
+            }
+        }
+
+        async function sendRegistrationEmail(userData) {
+            try {
+                const formData = new FormData();
+                formData.append('_subject', '🎉 NOVO ALUNO REGISTADO - Além do Além');
+                formData.append('_template', 'table');
+                formData.append('_captcha', 'false');
+                formData.append('nome', userData.nome);
+                formData.append('email', userData.email);
+                formData.append('telefone', userData.telefone);
+                formData.append('tipo', 'Aluno');
+                formData.append('data_registo', new Date().toLocaleString('pt-AO'));
+                
+                await fetch('https://formsubmit.co/nai374202@gmail.com', {
+                    method: 'POST',
+                    body: formData
+                });
+            } catch (error) {
+                console.error('Erro ao enviar email:', error);
+            }
+        }
+
+        async function handleRegister(event) {
+            event.preventDefault();
+            
+            if (!registerCaptchaPassed) {
+                showNotification(
+                    'reCAPTCHA Necessário 🔒',
+                    'Por favor, confirme que não é um robô.',
+                    'warning'
+                );
+                return;
+            }
+            
+            const messageDiv = document.getElementById('loginMessage');
+            const spinner = document.getElementById('loginSpinner');
+            
+            const nome = document.getElementById('regNome').value;
+            const email = document.getElementById('regEmail').value;
+            const telefone = document.getElementById('regTelefone').value;
+            const password = document.getElementById('regPassword').value;
+            const confirm = document.getElementById('regConfirmPassword').value;
+            const terms = document.getElementById('termsCheckbox').checked;
+            
+            // Validações
+            if (!terms) {
+                messageDiv.className = 'form-message warning';
+                messageDiv.textContent = 'Deve aceitar os termos e condições.';
+                return;
+            }
+            
+            if (password !== confirm) {
+                messageDiv.className = 'form-message error';
+                messageDiv.textContent = 'As palavras-passe não coincidem!';
+                return;
+            }
+            
+            // Verificar força da senha
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (password.match(/[a-z]/)) strength++;
+            if (password.match(/[A-Z]/)) strength++;
+            if (password.match(/[0-9]/)) strength++;
+            if (password.match(/[^a-zA-Z0-9]/)) strength++;
+            
+            if (strength < 3) {
+                messageDiv.className = 'form-message warning';
+                messageDiv.textContent = 'Por favor, escolha uma senha mais forte (use maiúsculas, minúsculas, números e caracteres especiais).';
+                return;
+            }
+            
+            if (users.some(u => u.email === email)) {
+                messageDiv.className = 'form-message error';
+                messageDiv.textContent = 'Este email já está registado.';
+                return;
+            }
+            
+            spinner.style.display = 'block';
+            messageDiv.style.display = 'none';
+            
+            // Abrir modal de verificação
+            setTimeout(() => {
+                spinner.style.display = 'none';
+                openVerificationModal(email, { nome, email, telefone, password });
+            }, 1000);
+        }
+
+        // ==================== FUNÇÕES DE LOGIN E DASHBOARD ====================
+        async function handleLogin(event) {
+            event.preventDefault();
+            
+            if (!loginCaptchaPassed) {
+                showNotification(
+                    'reCAPTCHA Necessário 🔒',
+                    'Por favor, confirme que não é um robô.',
+                    'warning'
+                );
+                return;
+            }
+            
+            const messageDiv = document.getElementById('loginMessage');
+            const spinner = document.getElementById('loginSpinner');
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            // Verificar tentativas de login
+            const attemptCheck = checkLoginAttempts(email);
+            if (attemptCheck.blocked) {
+                messageDiv.className = 'form-message error';
+                messageDiv.textContent = `Muitas tentativas. Tente novamente em ${attemptCheck.minutes} minutos.`;
+                return;
+            }
+            
+            spinner.style.display = 'block';
+            messageDiv.style.display = 'none';
+            
+            try {
+                const hashedPassword = await hashPassword(password);
+                const user = users.find(u => u.email === email && u.password === hashedPassword);
+                
+                setTimeout(() => {
+                    spinner.style.display = 'none';
+                    
+                    if (user) {
+                        if (!user.verificado) {
+                            messageDiv.className = 'form-message warning';
+                            messageDiv.textContent = 'Por favor, verifique seu email antes de fazer login.';
+                            return;
+                        }
+                        
+                        // Registar tentativa bem-sucedida
+                        registerLoginAttempt(email, true);
+                        
+                        const userSession = {
+                            id: user.id,
+                            nome: user.nome,
+                            email: user.email,
+                            telefone: user.telefone,
+                            tipo: user.tipo || 'aluno',
+                            verificado: user.verificado
+                        };
+                        sessionStorage.setItem('currentUser', JSON.stringify(userSession));
+                        currentUser = userSession;
+                        
+                        messageDiv.className = 'form-message success';
+                        messageDiv.textContent = 'Login efectuado com sucesso!';
+                        
+                        showNotification(
+                            'Bem-vindo de volta! 👋',
+                            `Olá ${user.nome}, que bom vê-lo novamente.`,
+                            'success'
+                        );
+                        
+                        updateUIForLoggedUser();
+                        
+                        // Esconder login e mostrar dashboard apropriado
+                        document.getElementById('loginBox').style.display = 'none';
+                        document.getElementById('pagamentoBox').style.display = 'none';
+                        document.getElementById('historicoBox').style.display = 'none';
+                        
+                        if (user.email === ADMIN_EMAIL || user.tipo === 'admin') {
+                            // É administrador
+                            document.getElementById('adminDashboard').style.display = 'block';
+                            loadAdminDashboard();
+                        } else {
+                            // É aluno
+                            document.getElementById('dashboard').style.display = 'block';
+                            loadStudentDashboard(user);
+                        }
+                        
+                    } else {
+                        // Registar tentativa falhada
+                        registerLoginAttempt(email, false);
+                        
+                        messageDiv.className = 'form-message error';
+                        messageDiv.textContent = 'Email ou palavra-passe incorrectos.';
+                    }
+                }, 1000);
+                
+            } catch (error) {
+                spinner.style.display = 'none';
+                messageDiv.className = 'form-message error';
+                messageDiv.textContent = 'Erro ao fazer login. Tente novamente.';
+            }
+        }
+
+        function loadStudentDashboard(user) {
+            // Preencher informações do perfil
+            document.getElementById('studentName').textContent = user.nome.split(' ')[0];
+            document.getElementById('profileName').textContent = user.nome;
+            document.getElementById('profileEmail').textContent = user.email;
+            document.getElementById('profilePhone').textContent = user.telefone;
+            
+            // Data de registo
+            const userData = users.find(u => u.id === user.id);
+            if (userData && userData.createdAt) {
+                const data = new Date(userData.createdAt);
+                document.getElementById('profileSince').textContent = data.toLocaleDateString('pt-AO', { month: 'short', year: 'numeric' });
+            }
+            
+            // Inicializar avatar com a primeira letra do nome
+            document.getElementById('studentAvatar').textContent = user.nome.charAt(0).toUpperCase();
+            
+            // Carregar disciplinas do aluno
+            loadDisciplinasAluno(user.id);
+            
+            // Carregar últimas aulas
+            loadUltimasAulas(user.id);
+            
+            // Carregar próximas aulas
+            loadProximasAulas(user.id);
+            
+            // Carregar avaliação do mês
+            loadAvaliacaoMes(user.id);
+            
+            // Carregar recomendações
+            loadRecomendacoes(user.id);
+            
+            // Inicializar gráfico
+            initProgressChart(user.id);
+        }
+
+        function loadDisciplinasAluno(userId) {
+            const disciplinas = [
+                { nome: 'Matemática', progresso: 75 },
+                { nome: 'Física', progresso: 60 },
+                { nome: 'Química', progresso: 45 },
+                { nome: 'Português', progresso: 90 }
+            ];
+            
+            const container = document.getElementById('disciplinasProgress');
+            container.innerHTML = '';
+            
+            disciplinas.forEach(d => {
+                container.innerHTML += `
+                    <div class="subject-progress">
+                        <div class="subject-info">
+                            <span>${d.nome}</span>
+                            <span>${d.progresso}%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${d.progresso}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function loadUltimasAulas(userId) {
+            const aulas = [
+                { disciplina: 'Matemática', data: '15 Mar 2024', hora: '14:00', status: 'realizada' },
+                { disciplina: 'Física', data: '13 Mar 2024', hora: '16:00', status: 'realizada' },
+                { disciplina: 'Química', data: '10 Mar 2024', hora: '15:00', status: 'realizada' },
+                { disciplina: 'Português', data: '08 Mar 2024', hora: '10:00', status: 'realizada' }
+            ];
+            
+            const container = document.getElementById('ultimasAulas');
+            container.innerHTML = '';
+            
+            aulas.forEach(a => {
+                container.innerHTML += `
+                    <div class="aula-item">
+                        <div>
+                            <strong>${a.disciplina}</strong>
+                            <div class="aula-data">${a.data} • ${a.hora}</div>
+                        </div>
+                        <span class="aula-status status-${a.status}">Realizada</span>
+                    </div>
+                `;
+            });
+        }
+
+        function loadProximasAulas(userId) {
+            const aulas = [
+                { disciplina: 'Matemática', dia: 22, mes: 'Mar', hora: '15:00', tema: 'Funções trigonométricas' },
+                { disciplina: 'Física', dia: 24, mes: 'Mar', hora: '16:30', tema: 'Leis de Newton' },
+                { disciplina: 'Química', dia: 27, mes: 'Mar', hora: '14:00', tema: 'Tabela periódica' }
+            ];
+            
+            const container = document.getElementById('proximasAulas');
+            container.innerHTML = '';
+            
+            aulas.forEach(a => {
+                container.innerHTML += `
+                    <div class="calendario-item">
+                        <div class="calendario-data">
+                            <div class="calendario-dia">${a.dia}</div>
+                            <div class="calendario-mes">${a.mes}</div>
+                        </div>
+                        <div class="calendario-info">
+                            <h4>${a.disciplina} - Aula ${a.tema}</h4>
+                            <p>${a.hora} • ${a.tema}</p>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function loadAvaliacaoMes(userId) {
+            const avaliacao = {
+                nota: 18.5,
+                estrelas: 4.5,
+                comentario: "Excelente evolução este mês. O aluno tem demonstrado grande dedicação, especialmente em Matemática e Física. Recomendo continuar com os exercícios de casa.",
+                professor: "Professor Carlos",
+                data: "20 Mar 2024"
+            };
+            
+            const container = document.getElementById('avaliacaoContent');
+            
+            // Gerar estrelas
+            let estrelasHtml = '';
+            for (let i = 1; i <= 5; i++) {
+                if (i <= Math.floor(avaliacao.estrelas)) {
+                    estrelasHtml += '<i class="fas fa-star" style="color: var(--secondary);"></i>';
+                } else if (i - 0.5 === avaliacao.estrelas) {
+                    estrelasHtml += '<i class="fas fa-star-half-alt" style="color: var(--secondary);"></i>';
+                } else {
+                    estrelasHtml += '<i class="far fa-star" style="color: var(--secondary);"></i>';
+                }
+            }
+            
+            container.innerHTML = `
+                <div class="avaliacao-nota">${avaliacao.nota}</div>
+                <div style="display: flex; justify-content: center; gap: 5px; margin-bottom: 1rem;">
+                    ${estrelasHtml}
+                </div>
+                <p class="avaliacao-comentario">"${avaliacao.comentario}"</p>
+                <p class="avaliacao-data">— ${avaliacao.professor}, ${avaliacao.data}</p>
+            `;
+        }
+
+        function loadRecomendacoes(userId) {
+            const recomendacoes = [
+                { icone: 'fa-book', texto: 'Matemática: Praticar exercícios de trigonometria' },
+                { icone: 'fa-flask', texto: 'Física: Revisar as leis de Newton' },
+                { icone: 'fa-dna', texto: 'Química: Estudar ligações químicas' },
+                { icone: 'fa-pencil-alt', texto: 'Português: Ler um livro por mês' }
+            ];
+            
+            const container = document.getElementById('recomendacoes');
+            container.innerHTML = '';
+            
+            recomendacoes.forEach(r => {
+                container.innerHTML += `
+                    <div class="recomendacao-item">
+                        <i class="fas ${r.icone}"></i>
+                        <p><strong>${r.texto.split(':')[0]}:</strong> ${r.texto.split(':')[1]}</p>
+                    </div>
+                `;
+            });
+        }
+
+        function initProgressChart(userId) {
+            const ctx = document.getElementById('progressChart').getContext('2d');
+            
+            // Destruir gráfico anterior se existir
+            if (progressChart) {
+                progressChart.destroy();
+            }
+            
+            progressChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+                    datasets: [
+                        {
+                            label: 'Matemática',
+                            data: [12, 14, 15, 16, 17, 18],
+                            borderColor: '#d4af37',
+                            backgroundColor: 'transparent',
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Física',
+                            data: [10, 12, 13, 14, 15, 16],
+                            borderColor: '#4299e1',
+                            backgroundColor: 'transparent',
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Química',
+                            data: [8, 10, 11, 12, 13, 14],
+                            borderColor: '#48bb78',
+                            backgroundColor: 'transparent',
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 20
+                        }
+                    }
+                }
+            });
+        }
+
+        function showPaymentArea() {
+            // Esconder dashboard e mostrar área de pagamentos
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('pagamentoBox').style.display = 'block';
+            document.getElementById('historicoBox').style.display = 'block';
+            
+            // Mostrar também a área de login (mas já está logado, então fica escondida)
+            document.getElementById('loginBox').style.display = 'none';
+            
+            // Carregar histórico de pagamentos
+            loadHistoricoPagamentos(currentUser.id);
+        }
+
+        // ==================== FUNÇÕES DO ADMINISTRADOR ====================
+        function loadAdminDashboard() {
+            document.getElementById('adminName').textContent = currentUser.nome;
+            
+            // Carregar dados iniciais
+            loadAlunosTable();
+            loadProfessoresTable();
+            loadAdminsTable();
+            loadRelatorios();
+        }
+
+        function showAdminTab(tabName) {
+            // Atualizar tabs
+            document.querySelectorAll('.admin-tab').forEach(tab => tab.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            // Esconder todos os conteúdos
+            document.querySelectorAll('.admin-tab-content').forEach(content => content.style.display = 'none');
+            
+            // Mostrar o tab selecionado
+            document.getElementById(`admin${tabName.charAt(0).toUpperCase() + tabName.slice(1)}Tab`).style.display = 'block';
+            
+            // Recarregar dados conforme necessário
+            if (tabName === 'alunos') loadAlunosTable();
+            if (tabName === 'professores') loadProfessoresTable();
+            if (tabName === 'admins') loadAdminsTable();
+            if (tabName === 'relatorios') loadRelatorios();
+        }
+
+        function loadAlunosTable() {
+            const alunos = users.filter(u => u.tipo === 'aluno' || !u.tipo);
+            const tbody = document.getElementById('alunosTableBody');
+            
+            tbody.innerHTML = '';
+            
+            alunos.forEach(aluno => {
+                const disciplinas = aluno.disciplinas?.join(', ') || 'Matemática, Física';
+                const progresso = calcularProgressoAluno(aluno.id);
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${aluno.nome}</td>
+                        <td>${aluno.email}</td>
+                        <td>${aluno.telefone}</td>
+                        <td>${disciplinas}</td>
+                        <td>
+                            <div style="width: 100px;">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${progresso}%"></div>
+                                </div>
+                                <small>${progresso}%</small>
+                            </div>
+                        </td>
+                        <td class="admin-actions">
+                            <button class="admin-btn admin-btn-view" onclick="verAluno(${aluno.id})" title="Ver detalhes">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="admin-btn admin-btn-edit" onclick="editarUtilizador(${aluno.id})" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="admin-btn admin-btn-delete" onclick="eliminarUtilizador(${aluno.id})" title="Eliminar">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            <button class="admin-btn" style="background: var(--secondary); color: var(--primary);" onclick="abrirAvaliacaoModal(${aluno.id}, '${aluno.nome}')" title="Lançar avaliação">
+                                <i class="fas fa-star"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function loadProfessoresTable() {
+            const professores = users.filter(u => u.tipo === 'professor');
+            const tbody = document.getElementById('professoresTableBody');
+            
+            tbody.innerHTML = '';
+            
+            professores.forEach(prof => {
+                const disciplinas = prof.disciplinas?.join(', ') || 'Matemática, Física';
+                const numAlunos = contarAlunosDoProfessor(prof.id);
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${prof.nome}</td>
+                        <td>${prof.email}</td>
+                        <td>${prof.telefone}</td>
+                        <td>${disciplinas}</td>
+                        <td>${numAlunos} alunos</td>
+                        <td class="admin-actions">
+                            <button class="admin-btn admin-btn-edit" onclick="editarUtilizador(${prof.id})" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="admin-btn admin-btn-delete" onclick="eliminarUtilizador(${prof.id})" title="Eliminar">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function loadAdminsTable() {
+            const admins = users.filter(u => u.tipo === 'admin' || u.email === ADMIN_EMAIL);
+            const tbody = document.getElementById('adminsTableBody');
+            
+            tbody.innerHTML = '';
+            
+            admins.forEach(admin => {
+                const isMainAdmin = admin.email === ADMIN_EMAIL;
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${admin.nome} ${isMainAdmin ? '<span class="badge badge-admin">Principal</span>' : ''}</td>
+                        <td>${admin.email}</td>
+                        <td>${admin.telefone || '---'}</td>
+                        <td><span class="badge badge-admin">Administrador</span></td>
+                        <td class="admin-actions">
+                            <button class="admin-btn admin-btn-edit" onclick="editarUtilizador(${admin.id})" title="Editar" ${isMainAdmin ? 'disabled' : ''}>
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="admin-btn admin-btn-delete" onclick="eliminarUtilizador(${admin.id})" title="Eliminar" ${isMainAdmin ? 'disabled' : ''}>
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function loadRelatorios() {
+            const totalUsuarios = users.length;
+            const totalAlunos = users.filter(u => u.tipo === 'aluno' || !u.tipo).length;
+            const totalProfessores = users.filter(u => u.tipo === 'professor').length;
+            const totalAdmins = users.filter(u => u.tipo === 'admin' || u.email === ADMIN_EMAIL).length;
+            
+            document.getElementById('totalUsuarios').textContent = totalUsuarios;
+            
+            // Calcular média geral (exemplo)
+            document.getElementById('mediaGeral').textContent = (Math.random() * 5 + 14).toFixed(1);
+            
+            // Aulas este mês (exemplo)
+            document.getElementById('aulasMesTotal').textContent = Math.floor(Math.random() * 50 + 30);
+        }
+
+        function calcularProgressoAluno(alunoId) {
+            // Exemplo - implementar lógica real depois
+            return Math.floor(Math.random() * 40 + 40);
+        }
+
+        function contarAlunosDoProfessor(professorId) {
+            // Exemplo - implementar lógica real depois
+            return Math.floor(Math.random() * 5 + 3);
+        }
+
+        function toggleTeacherFields() {
+            const tipo = document.getElementById('adminTipo').value;
+            const disciplinaGroup = document.getElementById('adminDisciplinaGroup');
+            
+            disciplinaGroup.style.display = tipo === 'professor' ? 'block' : 'none';
+        }
+
+        function openAddUserModal(tipo) {
+            document.getElementById('adminModalTitle').textContent = `Adicionar ${tipo === 'aluno' ? 'Aluno' : tipo === 'professor' ? 'Professor' : 'Administrador'}`;
+            document.getElementById('adminUserId').value = '';
+            document.getElementById('adminNome').value = '';
+            document.getElementById('adminEmail').value = '';
+            document.getElementById('adminTelefone').value = '';
+            document.getElementById('adminTipo').value = tipo;
+            document.getElementById('adminDisciplina').value = '';
+            document.getElementById('adminPassword').value = '';
+            
+            toggleTeacherFields();
+            
+            document.getElementById('adminUserModal').style.display = 'flex';
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminUserModal').style.display = 'none';
+        }
+
+        async function handleAdminUserSubmit(event) {
+            event.preventDefault();
+            
+            const id = document.getElementById('adminUserId').value;
+            const nome = document.getElementById('adminNome').value;
+            const email = document.getElementById('adminEmail').value;
+            const telefone = document.getElementById('adminTelefone').value;
+            const tipo = document.getElementById('adminTipo').value;
+            const disciplinas = document.getElementById('adminDisciplina').value.split(',').map(d => d.trim());
+            const password = document.getElementById('adminPassword').value;
+            
+            if (id) {
+                // Editar utilizador existente
+                const userIndex = users.findIndex(u => u.id == id);
+                if (userIndex !== -1) {
+                    users[userIndex].nome = nome;
+                    users[userIndex].email = email;
+                    users[userIndex].telefone = telefone;
+                    users[userIndex].tipo = tipo;
+                    users[userIndex].disciplinas = disciplinas;
+                    
+                    if (password) {
+                        users[userIndex].password = await hashPassword(password);
+                    }
+                }
+            } else {
+                // Novo utilizador
+                const hashedPassword = await hashPassword(password || '12345678');
+                const newUser = {
+                    id: Date.now(),
+                    nome,
+                    email,
+                    telefone,
+                    tipo,
+                    disciplinas: tipo === 'professor' ? disciplinas : [],
+                    password: hashedPassword,
+                    verificado: true,
+                    createdAt: new Date().toISOString(),
+                    pagamentos: []
+                };
+                
+                users.push(newUser);
+                
+                // Enviar email de notificação
+                await sendRegistrationEmail({ nome, email, telefone, tipo });
+            }
+            
+            localStorage.setItem('alem_do_alem_users', JSON.stringify(users));
+            
+            closeAdminModal();
+            showNotification('Sucesso!', 'Utilizador guardado com sucesso.', 'success');
+            
+            // Recarregar tabelas
+            loadAlunosTable();
+            loadProfessoresTable();
+            loadAdminsTable();
+        }
+
+        function editarUtilizador(userId) {
+            const user = users.find(u => u.id === userId);
+            if (!user) return;
+            
+            document.getElementById('adminModalTitle').textContent = `Editar ${user.tipo === 'aluno' ? 'Aluno' : user.tipo === 'professor' ? 'Professor' : 'Administrador'}`;
+            document.getElementById('adminUserId').value = user.id;
+            document.getElementById('adminNome').value = user.nome;
+            document.getElementById('adminEmail').value = user.email;
+            document.getElementById('adminTelefone').value = user.telefone || '';
+            document.getElementById('adminTipo').value = user.tipo || 'aluno';
+            document.getElementById('adminDisciplina').value = user.disciplinas?.join(', ') || '';
+            document.getElementById('adminPassword').value = '';
+            
+            toggleTeacherFields();
+            
+            document.getElementById('adminUserModal').style.display = 'flex';
+        }
+
+        function eliminarUtilizador(userId) {
+            if (confirm('Tem certeza que deseja eliminar este utilizador?')) {
+                users = users.filter(u => u.id !== userId);
+                localStorage.setItem('alem_do_alem_users', JSON.stringify(users));
+                
+                showNotification('Sucesso!', 'Utilizador eliminado com sucesso.', 'success');
+                
+                // Recarregar tabelas
+                loadAlunosTable();
+                loadProfessoresTable();
+                loadAdminsTable();
+            }
+        }
+
+        function verAluno(userId) {
+            // Implementar visualização detalhada do aluno
+            showNotification('Info', 'Funcionalidade em desenvolvimento', 'info');
+        }
+
+        function abrirAvaliacaoModal(alunoId, alunoNome) {
+            document.getElementById('avaliacaoAlunoId').value = alunoId;
+            document.getElementById('avaliacaoAlunoNome').value = alunoNome;
+            
+            const hoje = new Date();
+            const mesAno = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
+            document.getElementById('avaliacaoMes').value = mesAno;
+            
+            document.getElementById('avaliacaoNota').value = '';
+            document.getElementById('avaliacaoComentario').value = '';
+            
+            document.getElementById('adminAvaliacaoModal').style.display = 'flex';
+        }
+
+        function closeAvaliacaoModal() {
+            document.getElementById('adminAvaliacaoModal').style.display = 'none';
+        }
+
+        function handleAvaliacaoSubmit(event) {
+            event.preventDefault();
+            
+            const alunoId = document.getElementById('avaliacaoAlunoId').value;
+            const mes = document.getElementById('avaliacaoMes').value;
+            const nota = document.getElementById('avaliacaoNota').value;
+            const comentario = document.getElementById('avaliacaoComentario').value;
+            
+            const avaliacao = {
+                id: Date.now(),
+                alunoId: parseInt(alunoId),
+                mes,
+                nota: parseFloat(nota),
+                comentario,
+                professorId: currentUser.id,
+                professorNome: currentUser.nome,
+                data: new Date().toISOString()
+            };
+            
+            avaliacoes.push(avaliacao);
+            localStorage.setItem('alem_do_alem_avaliacoes', JSON.stringify(avaliacoes));
+            
+            closeAvaliacaoModal();
+            showNotification('Sucesso!', 'Avaliação lançada com sucesso.', 'success');
+        }
+
+        function exportarRelatorio() {
+            // Criar relatório em formato texto
+            const data = new Date().toLocaleDateString('pt-AO');
+            let relatorio = `RELATÓRIO DO SISTEMA - ALÉM DO ALÉM\n`;
+            relatorio += `Data: ${data}\n`;
+            relatorio += `====================================\n\n`;
+            relatorio += `Total de Utilizadores: ${users.length}\n`;
+            relatorio += `- Alunos: ${users.filter(u => u.tipo === 'aluno' || !u.tipo).length}\n`;
+            relatorio += `- Professores: ${users.filter(u => u.tipo === 'professor').length}\n`;
+            relatorio += `- Administradores: ${users.filter(u => u.tipo === 'admin' || u.email === ADMIN_EMAIL).length}\n\n`;
+            
+            relatorio += `LISTA DE ALUNOS:\n`;
+            users.filter(u => u.tipo === 'aluno' || !u.tipo).forEach((aluno, index) => {
+                relatorio += `${index + 1}. ${aluno.nome} - ${aluno.email} - ${aluno.telefone}\n`;
+            });
+            
+            // Download do ficheiro
+            const blob = new Blob([relatorio], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `relatorio_${data.replace(/\//g, '_')}.txt`;
+            a.click();
+            
+            showNotification('Sucesso!', 'Relatório exportado com sucesso.', 'success');
+        }
+
+        // ==================== FUNÇÕES DE LOGOUT ====================
+        function logout() {
+            sessionStorage.removeItem('currentUser');
+            currentUser = null;
+            
+            document.getElementById('loginBox').style.display = 'block';
+            document.getElementById('pagamentoBox').style.display = 'none';
+            document.getElementById('historicoBox').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('adminDashboard').style.display = 'none';
+            document.getElementById('user-menu').style.display = 'none';
+            
+            document.getElementById('loginForm').reset();
+            document.getElementById('paymentForm').reset();
+            
+            // Resetar captcha
+            loginCaptchaPassed = false;
+            registerCaptchaPassed = false;
+            recuperarCaptchaPassed = false;
+            
+            showNotification(
+                'Sessão terminada 👋',
+                'Até breve! Esperamos vê-lo novamente em breve.',
+                'info'
+            );
+        }
+
+        function updateUIForLoggedUser() {
+            document.getElementById('user-menu').style.display = 'block';
+            document.getElementById('displayName').textContent = currentUser.nome.split(' ')[0];
+            
+            if (currentUser.email === ADMIN_EMAIL || currentUser.tipo === 'admin') {
+                document.getElementById('userBadge').style.display = 'inline-block';
+            }
+        }
+
+        function showTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            if (tabName === 'login') {
+                document.querySelectorAll('.tab')[0].classList.add('active');
+                document.getElementById('login-tab').classList.add('active');
+            } else if (tabName === 'register') {
+                document.querySelectorAll('.tab')[1].classList.add('active');
+                document.getElementById('register-tab').classList.add('active');
+            } else {
+                document.querySelectorAll('.tab')[2].classList.add('active');
+                document.getElementById('recuperar-tab').classList.add('active');
+            }
+        }
+
+        // ==================== FUNÇÕES DE PAGAMENTO ====================
+        function selectMetodo(metodo) {
+            document.querySelectorAll('.metodo-pagamento').forEach(m => {
+                m.classList.remove('selected');
+                m.querySelector('.detalhes-pagamento').classList.remove('show');
+            });
+            
+            const elemento = event.currentTarget;
+            elemento.classList.add('selected');
+            elemento.querySelector('.detalhes-pagamento').classList.add('show');
+        }
+        
+        function updateValor() {
+            const select = document.getElementById('servicoPagamento');
+            const selectedOption = select.options[select.selectedIndex];
+            const valorBase = selectedOption.getAttribute('data-valor');
+            
+            if (valorBase) {
+                const isExplicacao = ['primario', 'secundario', 'universitario'].includes(selectedOption.value);
+                const numAulasGroup = document.getElementById('numAulasGroup');
+                
+                if (isExplicacao) {
+                    numAulasGroup.style.display = 'block';
+                    const numAulas = document.getElementById('numAulas').value;
+                    const valorTotal = parseInt(valorBase) * parseInt(numAulas);
+                    document.getElementById('valorTotal').textContent = valorTotal.toLocaleString() + ' AOA';
+                } else {
+                    numAulasGroup.style.display = 'none';
+                    document.getElementById('valorTotal').textContent = parseInt(valorBase).toLocaleString() + ' AOA';
+                }
+            } else {
+                document.getElementById('valorTotal').textContent = '0 AOA';
+                document.getElementById('numAulasGroup').style.display = 'none';
+            }
+        }
+        
+        function previewFile(input) {
+            const preview = document.getElementById('preview');
+            const file = input.files[0];
+            
+            if (file) {
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('O ficheiro é muito grande. Tamanho máximo: 5MB');
+                    input.value = '';
+                    return;
+                }
+                
+                if (!file.type.match('image.*') && !file.type.match('application/pdf')) {
+                    alert('Por favor, seleccione uma imagem ou PDF');
+                    input.value = '';
+                    return;
+                }
+                
+                if (file.type.match('image.*')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                        preview.classList.add('show');
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    preview.src = '';
+                    preview.alt = 'PDF seleccionado';
+                    preview.classList.add('show');
+                }
+            }
+        }
+        
+        async function handlePaymentSubmit(event) {
+            event.preventDefault();
+            
+            if (!currentUser) {
+                alert('Por favor, faça login primeiro.');
+                return;
+            }
+            
+            const statusDiv = document.getElementById('paymentStatus');
+            const servico = document.getElementById('servicoPagamento').value;
+            const metodo = document.querySelector('.metodo-pagamento.selected');
+            const comprovativo = document.getElementById('comprovativo').files[0];
+            const observacoes = document.getElementById('observacoesPagamento').value;
+            
+            if (!servico) {
+                statusDiv.className = 'status-pagamento status-rejeitado';
+                statusDiv.textContent = 'Por favor, seleccione um serviço.';
+                statusDiv.style.display = 'block';
+                return;
+            }
+            
+            if (!metodo) {
+                statusDiv.className = 'status-pagamento status-rejeitado';
+                statusDiv.textContent = 'Por favor, seleccione um método de pagamento.';
+                statusDiv.style.display = 'block';
+                return;
+            }
+            
+            if (!comprovativo) {
+                statusDiv.className = 'status-pagamento status-rejeitado';
+                statusDiv.textContent = 'Por favor, anexe o comprovativo de pagamento.';
+                statusDiv.style.display = 'block';
+                return;
+            }
+            
+            statusDiv.className = 'status-pagamento status-pendente';
+            statusDiv.textContent = 'A enviar comprovativo... Aguarde.';
+            statusDiv.style.display = 'block';
+            
+            try {
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                const pagamento = {
+                    id: Date.now(),
+                    userId: currentUser.id,
+                    servico: document.getElementById('servicoPagamento').options[document.getElementById('servicoPagamento').selectedIndex].text,
+                    valor: document.getElementById('valorTotal').textContent,
+                    metodo: metodo.querySelector('h4').textContent,
+                    data: new Date().toISOString(),
+                    status: 'pendente',
+                    observacoes: observacoes,
+                    comprovativo: comprovativo.name
+                };
+                
+                const userIndex = users.findIndex(u => u.id === currentUser.id);
+                if (userIndex !== -1) {
+                    if (!users[userIndex].pagamentos) users[userIndex].pagamentos = [];
+                    users[userIndex].pagamentos.push(pagamento);
+                    localStorage.setItem('alem_do_alem_users', JSON.stringify(users));
+                }
+                
+                statusDiv.className = 'status-pagamento status-aprovado';
+                statusDiv.textContent = 'Comprovativo enviado com sucesso! Aguarde confirmação.';
+                
+                showNotification(
+                    'Comprovativo Recebido! 📎',
+                    'O seu comprovativo foi enviado. Iremos confirmar o pagamento em breve.',
+                    'success'
+                );
+                
+                document.getElementById('paymentForm').reset();
+                document.getElementById('preview').classList.remove('show');
+                document.getElementById('numAulasGroup').style.display = 'none';
+                document.getElementById('valorTotal').textContent = '0 AOA';
+                
+                document.querySelectorAll('.metodo-pagamento').forEach(m => {
+                    m.classList.remove('selected');
+                    m.querySelector('.detalhes-pagamento').classList.remove('show');
+                });
+                
+                loadHistoricoPagamentos(currentUser.id);
+                
+            } catch (error) {
+                statusDiv.className = 'status-pagamento status-rejeitado';
+                statusDiv.textContent = 'Erro ao enviar comprovativo. Tente novamente.';
+                
+                showNotification(
+                    'Erro no Envio ❌',
+                    'Não foi possível enviar o comprovativo. Tente novamente.',
+                    'error'
+                );
+            }
+        }
+        
+        function loadHistoricoPagamentos(userId) {
+            const user = users.find(u => u.id === userId);
+            const historicoList = document.getElementById('historicoList');
+            
+            if (!user || !user.pagamentos || user.pagamentos.length === 0) {
+                historicoList.innerHTML = '<p style="text-align: center; color: #666;">Nenhum pagamento encontrado.</p>';
+                return;
+            }
+            
+            const pagamentos = user.pagamentos.sort((a, b) => new Date(b.data) - new Date(a.data));
+            
+            historicoList.innerHTML = pagamentos.map(p => {
+                const data = new Date(p.data).toLocaleDateString('pt-AO');
+                const statusClass = p.status === 'aprovado' ? 'status-aprovado' : 
+                                   p.status === 'rejeitado' ? 'status-rejeitado' : 'status-pendente';
+                const statusText = p.status === 'aprovado' ? 'Aprovado' : 
+                                  p.status === 'rejeitado' ? 'Rejeitado' : 'Pendente';
+                
+                return `
+                    <div class="historico-item">
+                        <div class="historico-header">
+                            <span><strong>${p.servico}</strong></span>
+                            <span class="historico-status ${statusClass}">${statusText}</span>
+                        </div>
+                        <div class="historico-data">
+                            <div>Valor: ${p.valor}</div>
+                            <div>Método: ${p.metodo}</div>
+                            <div>Data: ${data}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ==================== FUNÇÕES DE RECUPERAÇÃO DE SENHA ====================
+        async function handleRecuperarSenha(event) {
+            event.preventDefault();
+            
+            if (!recuperarCaptchaPassed) {
+                showNotification(
+                    'reCAPTCHA Necessário 🔒',
+                    'Por favor, confirme que não é um robô.',
+                    'warning'
+                );
+                return;
+            }
+            
+            const email = document.getElementById('recEmail').value;
+            const messageDiv = document.getElementById('loginMessage');
+            const spinner = document.getElementById('loginSpinner');
+            
+            const user = users.find(u => u.email === email);
+            
+            if (!user) {
+                messageDiv.className = 'form-message warning';
+                messageDiv.textContent = 'Se este email existir, enviaremos instruções de recuperação.';
+                return;
+            }
+            
+            spinner.style.display = 'block';
+            
+            try {
+                // Gerar token de recuperação
+                const resetToken = generateVerificationCode();
+                user.resetToken = resetToken;
+                user.resetTokenExpiry = Date.now() + 3600000; // 1 hora
+                localStorage.setItem('alem_do_alem_users', JSON.stringify(users));
+                
+                // Enviar email de recuperação
+                const formData = new FormData();
+                formData.append('_subject', '🔑 Recuperação de Senha - Além do Além');
+                formData.append('_template', 'table');
+                formData.append('_captcha', 'false');
+                formData.append('email', email);
+                formData.append('codigo', resetToken);
+                formData.append('mensagem', `Seu código de recuperação é: ${resetToken}\n\nDigite este código no site para redefinir sua senha.`);
+                
+                await fetch('https://formsubmit.co/' + email, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                spinner.style.display = 'none';
+                messageDiv.className = 'form-message info';
+                messageDiv.textContent = 'Enviamos instruções para seu email.';
+                
+                showNotification(
+                    'Email Enviado! 📧',
+                    'Verifique sua caixa de entrada para recuperar a senha.',
+                    'info'
+                );
+                
+            } catch (error) {
+                spinner.style.display = 'none';
+                messageDiv.className = 'form-message error';
+                messageDiv.textContent = 'Erro ao enviar email. Tente novamente.';
+            }
+        }
+
+        // ==================== FUNÇÕES DOS SLIDESHOWS ====================
+        
+        // Hero Slideshow
+        let heroCurrentSlide = 0;
+        const heroSlides = document.querySelectorAll('.hero-slide');
+        const heroDots = document.querySelectorAll('.hero-dot');
+
+        function showHeroSlide(index) {
+            if (index >= heroSlides.length) index = 0;
+            if (index < 0) index = heroSlides.length - 1;
+            
+            heroSlides.forEach(slide => slide.classList.remove('active'));
+            heroDots.forEach(dot => dot.classList.remove('active'));
+            
+            heroSlides[index].classList.add('active');
+            heroDots[index].classList.add('active');
+            
+            heroCurrentSlide = index;
+        }
+
+        function changeHeroSlide(direction) {
+            showHeroSlide(heroCurrentSlide + direction);
+            resetHeroInterval();
+        }
+
+        function goToHeroSlide(index) {
+            showHeroSlide(index);
+            resetHeroInterval();
+        }
+
+        function startHeroSlideshow() {
+            heroInterval = setInterval(() => {
+                showHeroSlide(heroCurrentSlide + 1);
+            }, 5000);
+        }
+
+        function resetHeroInterval() {
+            clearInterval(heroInterval);
+            startHeroSlideshow();
+        }
+
+        // Testimonial Slideshow
+        let testimonialCurrentSlide = 0;
+        const testimonialSlides = document.querySelectorAll('.testimonial-slide');
+
+        function showTestimonialSlide(index) {
+            if (index >= testimonialSlides.length) index = 0;
+            if (index < 0) index = testimonialSlides.length - 1;
+            
+            testimonialSlides.forEach(slide => slide.classList.remove('active'));
+            testimonialSlides[index].classList.add('active');
+            
+            testimonialCurrentSlide = index;
+        }
+
+        function changeTestimonialSlide(direction) {
+            showTestimonialSlide(testimonialCurrentSlide + direction);
+            resetTestimonialInterval();
+        }
+
+        function startTestimonialSlideshow() {
+            testimonialInterval = setInterval(() => {
+                showTestimonialSlide(testimonialCurrentSlide + 1);
+            }, 6000);
+        }
+
+        function resetTestimonialInterval() {
+            clearInterval(testimonialInterval);
+            startTestimonialSlideshow();
+        }
+
+        // Gallery Slideshow
+        let galleryCurrentSlide = 0;
+        const gallerySlides = document.querySelectorAll('.gallery-slide');
+        const galleryThumbs = document.querySelectorAll('.gallery-thumb');
+
+        function showGallerySlide(index) {
+            if (index >= gallerySlides.length) index = 0;
+            if (index < 0) index = gallerySlides.length - 1;
+            
+            gallerySlides.forEach(slide => slide.classList.remove('active'));
+            galleryThumbs.forEach(thumb => thumb.classList.remove('active'));
+            
+            gallerySlides[index].classList.add('active');
+            galleryThumbs[index].classList.add('active');
+            
+            galleryCurrentSlide = index;
+        }
+
+        function changeGallerySlide(direction) {
+            showGallerySlide(galleryCurrentSlide + direction);
+            resetGalleryInterval();
+        }
+
+        function goToGallerySlide(index) {
+            showGallerySlide(index);
+            resetGalleryInterval();
+        }
+
+        function startGallerySlideshow() {
+            galleryInterval = setInterval(() => {
+                showGallerySlide(galleryCurrentSlide + 1);
+            }, 7000);
+        }
+
+        function resetGalleryInterval() {
+            clearInterval(galleryInterval);
+            startGallerySlideshow();
+        }
+
+        // ==================== INICIALIZAÇÃO ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Criar utilizador admin se não existir
+            if (!users.some(u => u.email === ADMIN_EMAIL)) {
+                const adminUser = {
+                    id: 1,
+                    nome: 'Administrador',
+                    email: ADMIN_EMAIL,
+                    telefone: '922 221 997',
+                    tipo: 'admin',
+                    password: btoa('admin123' + ENCRYPTION_KEY), // password: admin123
+                    verificado: true,
+                    createdAt: new Date().toISOString(),
+                    pagamentos: []
+                };
+                users.push(adminUser);
+                localStorage.setItem('alem_do_alem_users', JSON.stringify(users));
+            }
+            
+            if (currentUser) {
+                updateUIForLoggedUser();
+                
+                // Se já estiver logado, mostrar dashboard apropriado
+                document.getElementById('loginBox').style.display = 'none';
+                
+                if (currentUser.email === ADMIN_EMAIL || currentUser.tipo === 'admin') {
+                    document.getElementById('adminDashboard').style.display = 'block';
+                    loadAdminDashboard();
+                } else {
+                    document.getElementById('dashboard').style.display = 'block';
+                    loadStudentDashboard(currentUser);
+                }
+            }
+            
+            // Iniciar slideshows
+            startHeroSlideshow();
+            startTestimonialSlideshow();
+            startGallerySlideshow();
+        });
+
         // Menu mobile
         document.querySelector('.mobile-menu').addEventListener('click', function() {
             document.querySelector('nav ul').classList.toggle('show');
         });
-
-        // Fechar menu ao clicar em link
+        
         document.querySelectorAll('nav a').forEach(link => {
             link.addEventListener('click', () => {
                 document.querySelector('nav ul').classList.remove('show');
             });
         });
-
-        // Smooth scroll para âncoras
+        
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -299,6 +2868,9 @@
                 }
             });
         });
+        
+        document.getElementById('servicoPagamento').addEventListener('change', updateValor);
+        document.getElementById('numAulas').addEventListener('change', updateValor);
     </script>
 </body>
 </html>
